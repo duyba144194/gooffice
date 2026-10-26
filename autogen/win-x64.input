@@ -4,6 +4,7 @@
 
 --host=x86_64-pc-cygwin
 --with-visual-studio=2022
+--disable-ccache
 
 # --- environment / toolchain paths (this machine) ---
 --enable-python=fully-internal
@@ -14,8 +15,10 @@
 --with-ant-home=C:/Users/NAM/lo/apache-ant-1.10.17
 --with-junit=C:/Users/NAM/lo/junit-4.10.jar
 --with-jdk-home=C:/Users/NAM/GoOffice/tools/jdk17
+--with-doxygen=C:/Users/NAM/lo/spp/c/bin/doxygen.exe
 
 # --- feature set (mirrors TDF official Windows build, minus TDF-only services) ---
+--enable-release-build
 --without-helppack-integration
 --enable-extension-integration
 --enable-scripting-beanshell
