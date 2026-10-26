@@ -18,11 +18,15 @@
 --with-package-format=deb
 --disable-online-update
 --disable-lto
+--enable-epm
+--with-external-tar=/mnt/c/Users/NAM/GoOffice/lo-externaltar
+--with-ant-home=/mnt/c/Users/NAM/lo/apache-ant-1.10.17
+--with-junit=/mnt/c/Users/NAM/lo/junit-4.10.jar
 
 # --- GoOffice branding ---
 --with-product-name=GoOffice
 --with-vendor=GoOffice Project
---with-package-version=1.0.0
+--with-package-version=1.0.0.0
 --with-branding=/mnt/c/Users/NAM/Desktop/office/branding
 --with-macosx-bundle-identifier=org.gooffice.script
 --with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)

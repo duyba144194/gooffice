@@ -65,7 +65,8 @@ jobs:
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libcups2-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxi-dev \
             libice-dev libsm-dev libfontconfig1-dev libfreetype6-dev \
-            openjdk-17-jdk ccache debhelper
+            openjdk-17-jdk ccache debhelper ant junit4 \
+            libkrb5-dev libnss3-dev libnspr4-dev meson ninja-build ragel
 
       - name: Install deps (macOS)
         if: startsWith(matrix.platform, 'macos')

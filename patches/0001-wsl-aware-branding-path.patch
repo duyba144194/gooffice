@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index 4641ba734..1bfffe1dc 100644
+index 4641ba734..eb63dc1c7 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -15583,14 +15583,23 @@ if test -z "$with_branding" -o "$with_branding" = "no"; then
+@@ -15583,14 +15583,31 @@ if test -z "$with_branding" -o "$with_branding" = "no"; then
      AC_MSG_RESULT([none])
      DEFAULT_BRAND_IMAGES="$brand_files"
  else
@@ -12,9 +12,17 @@ index 4641ba734..1bfffe1dc 100644
 +    dnl WSL form but store a Windows path (mixed mode) in config_host.mk.
 +    branding_dir_unix="$with_branding"
 +    branding_dir_win="$with_branding"
-+    if test -n "$WSL_DISTRO_NAME"; then
-+        branding_dir_unix=$(wslpath -u "$with_branding" 2>/dev/null) || branding_dir_unix="$with_branding"
-+        branding_dir_win=$(wslpath -m "$branding_dir_unix" 2>/dev/null) || branding_dir_win="$with_branding"
++    if test -n "$WSL_ONLY_AS_HELPER"; then
++        dnl wsl-as-helper: tests run in WSL, make runs natively on Windows
++        case "$with_branding" in
++        [[A-Za-z]]:[[\\/]]*)
++            _bp=$(wslpath -u "$with_branding" 2>/dev/null) && test -n "$_bp" && branding_dir_unix="$_bp"
++            _bp=$(wslpath -m "$branding_dir_unix" 2>/dev/null) && test -n "$_bp" && branding_dir_win="$_bp"
++            ;;
++        /mnt/*)
++            _bp=$(wslpath -m "$with_branding" 2>/dev/null) && test -n "$_bp" && branding_dir_win="$_bp"
++            ;;
++        esac
 +    fi
 +    if ! test -d "$branding_dir_unix" ; then
          AC_MSG_ERROR([No directory $with_branding, falling back to default branding])
@@ -30,7 +38,7 @@ index 4641ba734..1bfffe1dc 100644
                  AC_MSG_WARN([Branded file $lfile does not exist, using the default one])
                  DEFAULT_BRAND_IMAGES="$DEFAULT_BRAND_IMAGES $lfile"
              else
-@@ -15614,9 +15623,9 @@ PROGRESSFRAMECOLOR=
+@@ -15614,9 +15631,9 @@ PROGRESSFRAMECOLOR=
  PROGRESSTEXTCOLOR=
  PROGRESSTEXTBASELINE=
  
