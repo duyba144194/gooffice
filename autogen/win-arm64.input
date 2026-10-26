@@ -1,0 +1,38 @@
+# GoOffice — autogen.input for Windows arm64 (cross-build on x64 host:
+# local machine or GitHub Actions windows runner)
+# Based on TDF distro-configs/LibreOfficeWinArm64.conf, minus online-update.
+
+--host=aarch64-pc-cygwin
+--with-visual-studio=2022
+
+# --- environment / toolchain paths (LOCAL MACHINE values; CI overrides below) ---
+--enable-python=fully-internal
+--without-lxml
+--disable-online-update
+--with-external-tar=C:/Users/NAM/GoOffice/lo-externaltar
+--with-strawberry-perl-portable=C:/Users/NAM/lo/spp
+--with-ant-home=C:/Users/NAM/lo/apache-ant-1.10.17
+--with-junit=C:/Users/NAM/lo/junit-4.10.jar
+--with-jdk-home=C:/Users/NAM/GoOffice/tools/jdk17
+
+# --- feature set ---
+--without-helppack-integration
+--enable-extension-integration
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--with-help=html
+--with-myspell-dicts
+--with-package-format=msi
+--enable-mergelibs
+--disable-lto
+--enable-odk
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0
+--with-branding=C:/Users/NAM/Desktop/office/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi

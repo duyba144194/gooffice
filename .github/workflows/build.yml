@@ -1,0 +1,184 @@
+name: Build GoOffice
+
+# Builds GoOffice installers for platforms we cannot build locally:
+#   - macOS arm64 (DMG)   — macos-15 runner
+#   - macOS x64  (DMG)    — macos-13 runner (experimental: Xcode 15 vs required 16.2)
+#   - Linux arm64 (deb)   — ubuntu-24.04-arm runner (free arm64 for public repos)
+#   - Windows arm64 (MSI) — windows-2022 runner, cross-compile from x64
+# Windows amd64 and Linux amd64 are built locally (see scripts/).
+#
+# NOTE on duration: a full LibreOffice build on 2–4 vCPU free runners takes
+# 4–8h which can exceed the 6h job limit. Strategy:
+#   1. lean config (no LTO, minimal langs),
+#   2. ccache cached across attempts (macOS/Linux) — re-run a timed-out job:
+#      the second run reuses compiled objects and finishes.
+#   3. Windows arm64 cross has no ccache (MSVC) — lean config only; if it
+#      times out, split modules via `make <module>` in a follow-up.
+
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Comma list: macos-arm64, macos-x64, linux-arm64, win-arm64'
+        required: false
+        default: 'macos-arm64,linux-arm64'
+  push:
+    tags: ['v*']
+
+env:
+  LO_TAG: libreoffice-26.8.2.2
+  GOOFFICE_VERSION: '1.0.0'
+
+jobs:
+  build:
+    name: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: macos-arm64, os: macos-15,   input: macos-arm64.input }
+          - { platform: macos-x64,   os: macos-13,   input: macos-x64.input }
+          - { platform: linux-arm64, os: ubuntu-24.04-arm, input: linux-arm64.input }
+          - { platform: win-arm64,   os: windows-2022,     input: win-arm64.input }
+
+    steps:
+      - name: Checkout GoOffice repo (branding + configs)
+        uses: actions/checkout@v4
+
+      - name: Clone LibreOffice source (${{ env.LO_TAG }})
+        shell: bash
+        run: |
+          git clone --depth 1 --branch "$LO_TAG" --config core.autocrlf=false https://github.com/LibreOffice/core "$RUNNER_TEMP/core"
+          echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
+
+      # ---------- platform deps ----------
+      - name: Install deps (Linux arm64)
+        if: matrix.platform == 'linux-arm64'
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pkg-config autoconf automake make gperf bison nasm flex \
+            zip unzip gettext build-essential python3 python3-dev python3-lxml \
+            libgtk-3-dev libglib2.0-dev libdbus-glib-1-dev \
+            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            libcups2-dev libx11-dev libxext-dev libxrender-dev libxrandr-dev libxi-dev \
+            libice-dev libsm-dev libfontconfig1-dev libfreetype6-dev \
+            openjdk-17-jdk ccache debhelper
+
+      - name: Install deps (macOS)
+        if: startsWith(matrix.platform, 'macos')
+        shell: bash
+        run: |
+          brew install autoconf automake ccache ant
+          brew install --cask temurin@17
+
+      - name: Install deps (Windows arm64 cross)
+        if: matrix.platform == 'win-arm64'
+        shell: pwsh
+        run: |
+          $dl = "$env:RUNNER_TEMP\dl"
+          New-Item -ItemType Directory -Force -Path $dl | Out-Null
+          # same files/checksums as the official winget config + our local setup
+          $files = @{
+            'make-4.2.1-msvc.exe'                    = 'https://dev-www.libreoffice.org/bin/cygwin/make-4.2.1-msvc.exe'
+            'jom_1_1_4.zip'                          = 'http://download.qt.io/official_releases/jom/jom_1_1_4.zip'
+            'pkgconf-2.4.3.exe'                      = 'https://dev-www.libreoffice.org/extern/pkgconf-2.4.3.exe'
+            'strawberry-perl-5.40.0.1-64bit-portable.zip' = 'https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54001_64bit_UCRT/strawberry-perl-5.40.0.1-64bit-portable.zip'
+            'apache-ant-1.10.17-bin.zip'             = 'https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.17-bin.zip'
+            'junit-4.10.jar'                         = 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar'
+          }
+          foreach ($k in $files.Keys) {
+            Invoke-WebRequest -Uri $files[$k] -OutFile "$dl\$k"
+          }
+          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin","$env:USERPROFILE\lo" | Out-Null
+          Copy-Item "$dl\make-4.2.1-msvc.exe" "$env:USERPROFILE\bin\make.exe"
+          Copy-Item "$dl\pkgconf-2.4.3.exe"   "$env:USERPROFILE\bin\pkgconf-2.4.3.exe"
+          Expand-Archive "$dl\jom_1_1_4.zip" "$env:RUNNER_TEMP\jom_unpack" -Force
+          Copy-Item "$env:RUNNER_TEMP\jom_unpack\jom.exe" "$env:USERPROFILE\bin\jom.exe"
+          Expand-Archive "$dl\apache-ant-1.10.17-bin.zip" "$env:USERPROFILE\lo" -Force
+          Expand-Archive "$dl\strawberry-perl-5.40.0.1-64bit-portable.zip" "$env:USERPROFILE\lo\spp" -Force
+          Copy-Item "$dl\junit-4.10.jar" "$env:USERPROFILE\lo\"
+
+      # ---------- ccache ----------
+      - name: ccache cache
+        if: matrix.platform == 'linux-arm64' || startsWith(matrix.platform, 'macos')
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ matrix.platform }}-${{ github.run_id }}
+          restore-keys: ccache-${{ matrix.platform }}-
+
+      # ---------- configure & build ----------
+      - name: Configure (Linux/macOS)
+        if: matrix.platform != 'win-arm64'
+        shell: bash
+        run: |
+          cd "$CORE_DIR"
+          sed "s|/home/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|; \
+               s|/Users/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|" \
+            "$GITHUB_WORKSPACE/autogen/${{ matrix.input }}" > autogen.input
+          ./autogen.sh
+
+      - name: Configure (Windows arm64 cross, Git Bash)
+        if: matrix.platform == 'win-arm64'
+        shell: bash
+        run: |
+          cd "$CORE_DIR"
+          sed -e 's|C:/Users/NAM/GoOffice/lo-externaltar|C:/lo-externaltar|' \
+              -e 's|C:/Users/NAM/lo/spp|C:/Users/runneradmin/lo/spp|' \
+              -e 's|C:/Users/NAM/lo/apache-ant-1.10.17|C:/Users/runneradmin/lo/apache-ant-1.10.17|' \
+              -e 's|C:/Users/NAM/lo/junit-4.10.jar|C:/Users/runneradmin/lo/junit-4.10.jar|' \
+              -e 's|C:/Users/NAM/GoOffice/tools/jdk17|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|' \
+              -e 's|C:/Users/NAM/Desktop/office/branding|'"$(cygpath -m "$GITHUB_WORKSPACE")"'/branding|' \
+              "$GITHUB_WORKSPACE/autogen/${{ matrix.input }}" > autogen.input
+          # runner JDK path discovery
+          JDK17=$(ls -d /c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17*/x64 2>/dev/null | head -1)
+          sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
+          ./autogen.sh
+
+      - name: Build (Linux/macOS)
+        if: matrix.platform != 'win-arm64'
+        shell: bash
+        run: |
+          cd "$CORE_DIR"
+          if [ "${{ matrix.platform }}" != "win-arm64" ]; then export PATH="/usr/lib/ccache:$PATH"; fi
+          make fetch -j"$(nproc)"
+          make -j"$(nproc)"
+
+      - name: Build (Windows arm64 cross)
+        if: matrix.platform == 'win-arm64'
+        shell: cmd
+        run: |
+          cd /d "%CORE_DIR%"
+          set PATH=%USERPROFILE%\bin;%PATH%
+          make fetch -j8
+          make -j8
+
+      # ---------- artifacts ----------
+      - name: Locate installer artifacts
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          case "${{ matrix.platform }}" in
+            macos-*)   find "$CORE_DIR/workdir/installation" -name "*.dmg" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
+            linux-*)   find "$CORE_DIR/workdir/installation" -name "*.deb" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
+            win-*)     find "$CORE_DIR/workdir/installation" -name "*.msi" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
+          esac
+          ls -lh "$RUNNER_TEMP/out"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GoOffice-${{ matrix.platform }}
+          path: ${{ runner.temp }}/out/*
+          if-no-files-found: error
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-${{ matrix.platform }}
+          path: ${{ env.CORE_DIR }}/workdir/*.log
+          if-no-files-found: ignore

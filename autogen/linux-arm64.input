@@ -1,0 +1,28 @@
+# GoOffice — autogen.input for Linux arm64 (GitHub Actions ubuntu-24.04-arm runner)
+# Same feature set as linux-x64 (bundled externals, GTK3 GUI).
+
+--with-help=html
+--without-helppack-integration
+--with-myspell-dicts
+--with-fonts
+--enable-extension-integration
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--enable-dbus
+--enable-gtk3
+--enable-gstreamer-1-0
+--enable-gio
+--enable-python=internal
+--with-package-format=deb
+--disable-online-update
+--disable-lto
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0
+--with-branding=/home/runner/work/gooffice/gooffice/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi

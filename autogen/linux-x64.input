@@ -1,0 +1,29 @@
+# GoOffice — autogen.input for Linux amd64 (local WSL2 Ubuntu 24.04 build)
+# Based on TDF distro-configs/LibreOfficeLinux.conf, minus TDF-only services,
+# bundled externals for reliability (system libs stay out of scope for v1).
+
+--with-help=html
+--without-helppack-integration
+--with-myspell-dicts
+--with-fonts
+--enable-extension-integration
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--enable-dbus
+--enable-gtk3
+--enable-gstreamer-1-0
+--enable-gio
+--enable-python=internal
+--with-package-format=deb
+--disable-online-update
+--disable-lto
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0
+--with-branding=/mnt/c/Users/NAM/Desktop/office/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi

@@ -1,0 +1,27 @@
+# GoOffice — autogen.input for macOS arm64 (GitHub Actions macos-15 runner)
+# Based on TDF distro-configs/LibreOfficeMacOSX.conf (minus --enable-headless which
+# is for LOKit builds, minus online-update), plus GoOffice branding.
+
+--with-epm
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--enable-extension-integration
+--without-system-postgresql
+--with-help=html
+--with-myspell-dicts
+--with-package-format=dmg
+--enable-odk
+--enable-mergelibs=more
+--without-system-fontconfig
+--without-system-freetype
+--disable-online-update
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0
+--with-branding=/Users/runner/work/gooffice/gooffice/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi
