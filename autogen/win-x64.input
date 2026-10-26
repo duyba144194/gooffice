@@ -1,0 +1,39 @@
+# GoOffice — autogen.input for Windows amd64 (local build)
+# Based on: TDF distro-configs/LibreOfficeWin64.conf + .config/user_steps.winget template
+# Usage: cp autogen/win-x64.input <lo-source>/autogen.input && wsl ./autogen.sh && make
+
+--host=x86_64-pc-cygwin
+--with-visual-studio=2022
+
+# --- environment / toolchain paths (this machine) ---
+--enable-python=fully-internal
+--without-lxml
+--disable-online-update
+--with-external-tar=C:/Users/NAM/GoOffice/lo-externaltar
+--with-strawberry-perl-portable=C:/Users/NAM/lo/spp
+--with-ant-home=C:/Users/NAM/lo/apache-ant-1.10.17
+--with-junit=C:/Users/NAM/lo/junit-4.10.jar
+--with-jdk-home=C:/Users/NAM/GoOffice/tools/jdk17
+
+# --- feature set (mirrors TDF official Windows build, minus TDF-only services) ---
+--without-helppack-integration
+--enable-extension-integration
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--with-help=html
+--with-myspell-dicts
+--with-package-format=msi
+--enable-mergelibs=more
+--enable-odk
+# LTO off for local validation builds (faster, less RAM); CI release builds enable it
+--disable-lto
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0
+--with-branding=C:/Users/NAM/Desktop/office/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi

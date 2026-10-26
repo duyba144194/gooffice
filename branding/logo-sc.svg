@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="464" height="96" viewBox="0 0 464 96">
+  <!-- GoOffice start-center logo (light background version) -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00c176"/>
+      <stop offset="1" stop-color="#009e60"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect x="6" y="8" width="80" height="80" rx="18" fill="url(#g)"/>
+    <rect x="24" y="30" width="44" height="6" rx="3" fill="#ffffff" opacity="0.92"/>
+    <rect x="24" y="44" width="44" height="6" rx="3" fill="#ffffff" opacity="0.75"/>
+    <rect x="24" y="58" width="27" height="6" rx="3" fill="#ffffff" opacity="0.58"/>
+    <path d="M 53 53 l 16 10.5 l -16 10.5 v -6.5 l 6.5 -4 l -6.5 -4 z" fill="#ffffff"/>
+  </g>
+  <text x="104" y="70" font-family="'Liberation Sans','Segoe UI',Arial,sans-serif" font-size="54" font-weight="bold" fill="#00b36b">Go</text>
+  <text x="182" y="70" font-family="'Liberation Sans','Segoe UI',Arial,sans-serif" font-size="54" font-weight="bold" fill="#334155">Office</text>
+</svg>
