@@ -34,8 +34,6 @@ jobs:
     name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 350
-    # honor the platforms dispatch input (empty = all)
-    if: ${{ github.event_name == 'push' || github.event.inputs.platforms == '' || contains(github.event.inputs.platforms, matrix.platform) }}
     strategy:
       fail-fast: false
       matrix:
