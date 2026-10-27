@@ -51,6 +51,12 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 --branch "$LO_TAG" --config core.autocrlf=false https://github.com/LibreOffice/core "$RUNNER_TEMP/core"
+          cd "$RUNNER_TEMP/core"
+          git -c user.name=GoOfficeCI -c user.email=ci@gooffice.local apply \
+            "$GITHUB_WORKSPACE/patches/0001-wsl-aware-branding-path.patch" \
+            "$GITHUB_WORKSPACE/patches/0002-gooffice-product-blocks-in-openoffice-lst.patch" \
+            "$GITHUB_WORKSPACE/patches/0003-gooffice-msi-guids.patch" \
+            "$GITHUB_WORKSPACE/patches/0004-gooffice-in-sysui-productlist.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------

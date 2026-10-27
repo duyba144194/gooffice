@@ -1,0 +1,20 @@
+diff --git a/sysui/productlist.mk b/sysui/productlist.mk
+index 5d21a8e52..232cce7af 100644
+--- a/sysui/productlist.mk
++++ b/sysui/productlist.mk
+@@ -7,12 +7,14 @@
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ #
+ 
+-PRODUCTLIST := libreoffice libreofficedev
++PRODUCTLIST := libreoffice libreofficedev gooffice
+ PKGVERSION := $(LIBO_VERSION_MAJOR).$(LIBO_VERSION_MINOR).$(LIBO_VERSION_MICRO)
+ PKGVERSIONSHORT := $(LIBO_VERSION_MAJOR).$(LIBO_VERSION_MINOR)
+ PRODUCTNAME.libreoffice := LibreOffice
+ PRODUCTNAME.libreofficedev := LibreOfficeDev
++PRODUCTNAME.gooffice := GoOffice
+ UNIXFILENAME.libreoffice := libreoffice$(PKGVERSIONSHORT)
+ UNIXFILENAME.libreofficedev := libreofficedev$(PKGVERSIONSHORT)
++UNIXFILENAME.gooffice := gooffice$(PKGVERSIONSHORT)
+ 
+ # vim: set noet sw=4 ts=4:

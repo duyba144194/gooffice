@@ -55,6 +55,11 @@
 
 ## Trạng thái build (10:30 sáng 27-10)
 
+### ✅ Linux amd64 — HOÀN THÀNH (11:27, 27-10)
+- 44 file .deb tại `C:\Users\NAM\GoOffice\dist\linux-x64\` (39 gói chính `gooffice1.0-*` + langpack/trợ giúp tiếng Việt), tổng 231 MB
+- Smoke-test headless trong WSL: PASS
+- Lưu ý: build phải làm trên ext4 của WSL (~/core), không làm việc trên /mnt/c (libffi hỏng)
+
 ### ✅ Windows amd64 — HOÀN THÀNH
 4 MSI tại `C:\Users\NAM\GoOffice\dist\win-x64\`:
 | File | Size |
@@ -68,13 +73,11 @@
 - UpgradeCode/ProductCode: GUID mới hoàn toàn (cài song song với LibreOffice không xung đột) ✅
 - Smoke-test headless (html→txt conversion): PASS ✅
 
-### 🔨 Linux amd64 — đang build (WSL ext4 ~/core)
-- /mnt/c bị libffi từ chối (9p fs) → chuyển toàn bộ sang ext4
-- autogen OK, đang compile (log: logs/make-build-linux-ext4.log), dự kiến 2–4h
+### 🔨 Linux amd64 — HOÀN THÀNH (xem trên)
 
 ### ⏳ Chờ tiếp
-- GitHub: cài gh CLI xong, **chờ username/tài khoản của anh** để push repo + chạy CI cho macOS arm64/x64, Windows arm64, Linux arm64
-- (Tùy chọn) cài thử MSI lên máy thật
+- **GitHub auth**: anh duyba144194 cần mở https://github.com/login/device và nhập mã tôi cung cấp (tôi sẽ sinh mã mới khi anh sẵn sàng — nhắn "login github" là tôi bắn mã mới). Sau đó tôi: tạo repo `duyba144194/gooffice` → push → kích hoạt Actions build macOS arm64/x64 + Windows arm64 + Linux arm64.
+- (Tùy chọn) cài thử MSI/deb lên máy thật
 
 
 ## Ghi chú kỹ thuật (cho phiên sau)
