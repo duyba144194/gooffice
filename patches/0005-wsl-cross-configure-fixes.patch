@@ -1,5 +1,5 @@
 diff --git a/configure.ac b/configure.ac
-index 4641ba734..9e8624a08 100644
+index eb63dc1c7..9e8624a08 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -6280,7 +6280,14 @@ if test "$cross_compiling" = "yes"; then
@@ -83,52 +83,3 @@ index 4641ba734..9e8624a08 100644
               -e 's,/CONF-FOR-BUILD,,g;' config_build.mk
  
      eval `cat CONF-FOR-BUILD/build-config`
-@@ -15583,14 +15613,31 @@ if test -z "$with_branding" -o "$with_branding" = "no"; then
-     AC_MSG_RESULT([none])
-     DEFAULT_BRAND_IMAGES="$brand_files"
- else
--    if ! test -d $with_branding ; then
-+    dnl GoOffice patch: make the branding path WSL-as-helper aware. configure
-+    dnl runs inside WSL while make runs natively on Windows, so test paths in
-+    dnl WSL form but store a Windows path (mixed mode) in config_host.mk.
-+    branding_dir_unix="$with_branding"
-+    branding_dir_win="$with_branding"
-+    if test -n "$WSL_ONLY_AS_HELPER"; then
-+        dnl wsl-as-helper: tests run in WSL, make runs natively on Windows
-+        case "$with_branding" in
-+        [[A-Za-z]]:[[\\/]]*)
-+            _bp=$(wslpath -u "$with_branding" 2>/dev/null) && test -n "$_bp" && branding_dir_unix="$_bp"
-+            _bp=$(wslpath -m "$branding_dir_unix" 2>/dev/null) && test -n "$_bp" && branding_dir_win="$_bp"
-+            ;;
-+        /mnt/*)
-+            _bp=$(wslpath -m "$with_branding" 2>/dev/null) && test -n "$_bp" && branding_dir_win="$_bp"
-+            ;;
-+        esac
-+    fi
-+    if ! test -d "$branding_dir_unix" ; then
-         AC_MSG_ERROR([No directory $with_branding, falling back to default branding])
-     else
--        AC_MSG_RESULT([$with_branding])
--        CUSTOM_BRAND_DIR="$with_branding"
-+        AC_MSG_RESULT([$branding_dir_win])
-+        CUSTOM_BRAND_DIR="$branding_dir_win"
-         for lfile in $brand_files
-         do
--            if ! test -f $with_branding/$lfile ; then
-+            if ! test -f "$branding_dir_unix/$lfile" ; then
-                 AC_MSG_WARN([Branded file $lfile does not exist, using the default one])
-                 DEFAULT_BRAND_IMAGES="$DEFAULT_BRAND_IMAGES $lfile"
-             else
-@@ -15614,9 +15661,9 @@ PROGRESSFRAMECOLOR=
- PROGRESSTEXTCOLOR=
- PROGRESSTEXTBASELINE=
- 
--if test "$check_for_progress" = "yes" -a -f "$with_branding/progress.conf" ; then
--    source "$with_branding/progress.conf"
--    AC_MSG_RESULT([settings found in $with_branding/progress.conf])
-+if test "$check_for_progress" = "yes" -a -f "$branding_dir_unix/progress.conf" ; then
-+    source "$branding_dir_unix/progress.conf"
-+    AC_MSG_RESULT([settings found in $branding_dir_win/progress.conf])
- else
-     AC_MSG_RESULT([none])
- fi
