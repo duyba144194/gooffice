@@ -17,6 +17,7 @@
 --without-system-fontconfig
 --without-system-freetype
 --disable-online-update
+--enable-release-build
 
 # --- GoOffice branding ---
 --with-product-name=GoOffice

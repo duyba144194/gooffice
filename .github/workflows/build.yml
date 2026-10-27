@@ -41,7 +41,9 @@ jobs:
           - { platform: macos-arm64, os: macos-15,   input: macos-arm64.input }
           - { platform: macos-x64,   os: macos-13,   input: macos-x64.input }
           - { platform: linux-arm64, os: ubuntu-24.04-arm, input: linux-arm64.input }
-          - { platform: win-arm64,   os: windows-2022,     input: win-arm64.input }
+        # Windows arm64 is built locally on the maintainer machine (MSVC arm64
+        # cross tools + 20 cores beat a 4-core free runner that cannot finish
+        # within the 350-min job limit and has no ccache for MSVC).
 
     steps:
       - name: Checkout GoOffice repo (branding + configs)
@@ -79,7 +81,7 @@ jobs:
         if: startsWith(matrix.platform, 'macos')
         shell: bash
         run: |
-          brew install autoconf automake ccache ant make
+          brew install autoconf automake ccache ant make meson ninja wget
           # expose GNU make 4.x as `make` (system make 3.81 is too old for LO)
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> "$GITHUB_PATH"
           brew install --cask temurin@17
@@ -119,12 +121,22 @@ jobs:
           path: ~/.cache/ccache
           key: ccache-${{ matrix.platform }}-${{ github.run_id }}
           restore-keys: ccache-${{ matrix.platform }}-
+        # keep partial compile results even when the 350-min job limit kills the run:
+        # re-running the job then resumes from the restored cache
+        save-always: true
 
       # ---------- configure & build ----------
       - name: Configure (Linux/macOS)
         if: matrix.platform != 'win-arm64'
         shell: bash
         run: |
+          if [ "$(uname -s)" = "Darwin" ]; then
+            # configure rejects Homebrew's `pkgconf` binary name; hand it the
+            # symlinked `pkg-config` path it has an explicit allowlist for
+            if [ -x /opt/homebrew/bin/pkg-config ]; then export PKG_CONFIG=/opt/homebrew/bin/pkg-config
+            elif [ -x /usr/local/bin/pkg-config ]; then export PKG_CONFIG=/usr/local/bin/pkg-config
+            else export PKG_CONFIG=/usr/bin/pkg-config; fi
+          fi
           cd "$CORE_DIR"
           sed "s|/home/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|; \
                s|/Users/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|" \

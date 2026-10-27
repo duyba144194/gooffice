@@ -9,11 +9,13 @@
 --enable-python=fully-internal
 --without-lxml
 --disable-online-update
+--enable-release-build
 --with-external-tar=C:/Users/NAM/GoOffice/lo-externaltar
 --with-strawberry-perl-portable=C:/Users/NAM/lo/spp
 --with-ant-home=C:/Users/NAM/lo/apache-ant-1.10.17
 --with-junit=C:/Users/NAM/lo/junit-4.10.jar
 --with-jdk-home=C:/Users/NAM/GoOffice/tools/jdk17
+--with-doxygen=C:/Users/NAM/lo/spp/c/bin/doxygen.exe
 
 # --- feature set ---
 --without-helppack-integration

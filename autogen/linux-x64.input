@@ -17,6 +17,7 @@
 --enable-python=internal
 --with-package-format=deb
 --disable-online-update
+--enable-release-build
 --disable-lto
 --enable-epm
 --with-external-tar=/mnt/c/Users/NAM/GoOffice/lo-externaltar
