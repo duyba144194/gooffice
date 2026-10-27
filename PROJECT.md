@@ -42,8 +42,39 @@
 
 1. Clone Git repo TRƯỚC KHI set `core.autocrlf=false` → CRLF corrupt shell scripts. Giải pháp: repo-local config + renormalize. CI workflow đã thêm `--config core.autocrlf=false` vào git clone.
 2. Start-Process -ArgumentList (array) KHÔNG quote items có space → `--installPath "C:\Program Files..."` vỡ. Dùng single string với quote.
-3. configure tìm al.exe qua Cygwin registry procfs (/proc/registry32) không tồn tại trong WSL → phải có file .NET 4.8 SDK trên đĩa.
+3. configure tìm al.exe qua Cygwin registry procfs (/proc/registry32) không có trong WSL → phải có file .NET 4.8 SDK trên đĩa (component `Microsoft.Net.Component.4.8.SDK`).
 4. Hook Mimosa chặn combo Bash "cp vào autogen* + chạy autogen.sh" — tách lệnh cp và chạy script thành 2 tool calls riêng.
+5. `--with-package-version` cần 4 thành phần (X.Y.Z.PATCH) — "1.0.0" làm LIBO_VERSION_PATCH rỗng → rc.exe lỗi RC2127/RC2167. Dùng "1.0.0.0".
+6. `--enable-release` không tồn tại — đúng là `--enable-release-build` (tránh hậu tố "Dev" trên PRODUCTNAME).
+7. Exit code 8006 của VS installer = còn process VS đang chạy, KHÔNG phải cần reboot.
+8. `--with-branding` của stock LO không WSL-aware → patches/0001 (đã qua 4 version: m4 nuốt `[A-Za-z]` trong case → cần `[[...]]` kép; wslpath -u với path unix sẵn GHÉP tiền tố /mnt/c chứ không trả rỗng; chỉ convert khi WSL_ONLY_AS_HELPER — build Linux native trong WSL phải giữ path unix).
+9. Chạy build Linux trong WSL từ Git Bash: PATH Windows bị kế thừa → configure tưởng wsl-as-helper. Sanitize PATH trước khi chạy.
+10. Bắt buộc cài thêm ở WSL Ubuntu cho build LO: libkrb5-dev (com_err), libnss3-dev + libnspr4-dev, meson + ninja-build + ragel (harfbuzz), ant (dùng chung ant Windows qua /mnt/c được).
+11. make tự re-autogen khi configure.ac mới hơn config_host.mk — tiện tay, đừng chạy autogen thủ công lại.
+12. ATL x64 (atls.lib) KHÔNG có sẵn dù --includeRecommended: phải --add Microsoft.VisualStudio.Component.VC.ATL tường minh (cần cho so_activex.dll).
+
+## Trạng thái build (10:30 sáng 27-10)
+
+### ✅ Windows amd64 — HOÀN THÀNH
+4 MSI tại `C:\Users\NAM\GoOffice\dist\win-x64\`:
+| File | Size |
+|---|---|
+| GoOffice_1.0.0.0_Win_x86-64_en-US_vi.msi (bộ chính, UI tiếng Việt) | 222 MB |
+| GoOffice_1.0.0.0_Win_x86-64_helppack_en-US.msi | 2.9 MB |
+| GoOffice_1.0.0.0_Win_x86-64_helppack_vi.msi | 3.6 MB |
+| GoOffice_1.0.0.0_Win_x86-64_sdk.msi | 23 MB |
+
+- MSI metadata: ProductName="GoOffice 1.0.0.0", Manufacturer="GoOffice Project" ✅
+- UpgradeCode/ProductCode: GUID mới hoàn toàn (cài song song với LibreOffice không xung đột) ✅
+- Smoke-test headless (html→txt conversion): PASS ✅
+
+### 🔨 Linux amd64 — đang build (WSL ext4 ~/core)
+- /mnt/c bị libffi từ chối (9p fs) → chuyển toàn bộ sang ext4
+- autogen OK, đang compile (log: logs/make-build-linux-ext4.log), dự kiến 2–4h
+
+### ⏳ Chờ tiếp
+- GitHub: cài gh CLI xong, **chờ username/tài khoản của anh** để push repo + chạy CI cho macOS arm64/x64, Windows arm64, Linux arm64
+- (Tùy chọn) cài thử MSI lên máy thật
 
 
 ## Ghi chú kỹ thuật (cho phiên sau)
