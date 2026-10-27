@@ -13,6 +13,7 @@
 --with-package-format=dmg
 --enable-odk
 --without-doxygen
+--without-junit
 --enable-mergelibs=more
 --without-system-fontconfig
 --without-system-freetype
