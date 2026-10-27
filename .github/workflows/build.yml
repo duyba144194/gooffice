@@ -137,6 +137,9 @@ jobs:
             if [ -x /opt/homebrew/bin/pkg-config ]; then export PKG_CONFIG=/opt/homebrew/bin/pkg-config
             elif [ -x /usr/local/bin/pkg-config ]; then export PKG_CONFIG=/usr/local/bin/pkg-config
             else export PKG_CONFIG=/usr/bin/pkg-config; fi
+            # runner image puts Python.framework first in PATH; brew meson is
+            # only compatible with brew's own python
+            if [ -x "$(brew --prefix)/bin/python3" ]; then export PYTHON="$(brew --prefix)/bin/python3"; fi
           fi
           cd "$CORE_DIR"
           sed "s|/home/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|; \
