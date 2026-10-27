@@ -75,9 +75,22 @@
 
 ### 🔨 Linux amd64 — HOÀN THÀNH (xem trên)
 
+### 🔨 Windows arm64 — đang build local (cross x64→arm64, ~50%)
+Vòng vá cross-compile (đã commit, export thành patches/0005 + 0006):
+- 0005 (configure.ac): forward strawberry-perl/doxygen/jdk-home/junit sang BUILD-side configure; ép host=cygwin cho BUILD side; python bundled cho build side; tắt ccache build side; normalize alias 8.3 CONF-F~1
+- 0006 (gbuild): Helper.mk map các dir *_FOR_BUILD sang POSIX path (loader Windows không hiểu PATH colon dạng C:/)
+- bean: skip Library_officebean khi target AARCH64 (jawt.lib x64)
+Sau mỗi vòng: fix → commit src/core → resume make. Đang ở bước ~4.9k/16k (pdfium). Log: logs/make-build-arm64.log
+
+### 🔨 CI (repo duyba144194/gooffice, workflow build.yml)
+- linux-arm64 (run 40519379972): ĐANG COMPILE (~1h) sau khi qua các fix: release-build flag, patch-apply CRLF, gperf, doxygen, junit, pkg-config allowlist, PYTHON cho meson
+- macos-arm64/x64: loạt fix tương tự đã push; job đang trong queue/compile — các lần fail trước: make cũ (3.81→brew make), gperf CLT, doxygen, junit, meson/python
+- Workflow giờ tôn trọng input `platforms` (tránh trùng linux-arm64)
+
 ### ⏳ Chờ tiếp
-- **GitHub auth**: anh duyba144194 cần mở https://github.com/login/device và nhập mã tôi cung cấp (tôi sẽ sinh mã mới khi anh sẵn sàng — nhắn "login github" là tôi bắn mã mới). Sau đó tôi: tạo repo `duyba144194/gooffice` → push → kích hoạt Actions build macOS arm64/x64 + Windows arm64 + Linux arm64.
-- (Tùy chọn) cài thử MSI/deb lên máy thật
+- local arm64 → MSI arm64 (packaging tự chạy cuối make)
+- CI mac + linux-arm64 → DMG/deb artifacts
+- win-arm64 MSI sẽ build local xong trước CI mac
 
 
 ## Ghi chú kỹ thuật (cho phiên sau)
