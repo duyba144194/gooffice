@@ -121,9 +121,9 @@ jobs:
           path: ~/.cache/ccache
           key: ccache-${{ matrix.platform }}-${{ github.run_id }}
           restore-keys: ccache-${{ matrix.platform }}-
-        # keep partial compile results even when the 350-min job limit kills the run:
-        # re-running the job then resumes from the restored cache
-        save-always: true
+          # keep partial compile results even when the 350-min job limit kills
+          # the run: re-running the job then resumes from the restored cache
+          save-always: true
 
       # ---------- configure & build ----------
       - name: Configure (Linux/macOS)
