@@ -60,6 +60,16 @@
 - Smoke-test headless trong WSL: PASS
 - Lưu ý: build phải làm trên ext4 của WSL (~/core), không làm việc trên /mnt/c (libffi hỏng)
 
+### ✅ Windows arm64 — HOÀN THÀNH (23:37, 27-10, cross-compile trên máy local)
+4 MSI tại `C:\Users\NAM\GoOffice\dist\win-arm64\`:
+| File | Size |
+|---|---|
+| GoOffice_1.0.0.0_Win_aarch64_en-US_vi.msi (bộ chính) | 206 MB |
+| helppack en-US / vi | 2.9 / 3.6 MB |
+| SDK | 22 MB |
+Metadata: ProductName/Manufacturer/UpgradeCode GoOffice ✅. (Chưa smoke-test chạy thật vì host là x64 — cần máy Windows ARM64 thật để cài thử.)
+Vòng vá cross-compile (patches/0005 configure + 0006 gbuild/bean/Repository) — chi tiết trong git log.
+
 ### ✅ Windows amd64 — HOÀN THÀNH
 4 MSI tại `C:\Users\NAM\GoOffice\dist\win-x64\`:
 | File | Size |
