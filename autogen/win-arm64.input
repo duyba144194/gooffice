@@ -4,6 +4,7 @@
 
 --host=aarch64-pc-cygwin
 --with-visual-studio=2022
+--disable-ccache
 
 # --- environment / toolchain paths (LOCAL MACHINE values; CI overrides below) ---
 --enable-python=fully-internal

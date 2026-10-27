@@ -1,14 +1,14 @@
 {
   "schemaVersion": "mimosa-hook-status/v1",
-  "recordedAt": "2026-10-27T13:09:24.966Z",
+  "recordedAt": "2026-10-27T13:52:41.445Z",
   "sessionId": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "event": "PostToolUse",
   "toolName": "Edit",
-  "file": "C:\\Users\\NAM\\GoOffice\\src\\core\\configure.ac",
+  "file": "autogen/win-arm64.input",
   "outcome": "clear",
   "coverage": "complete",
   "findingCount": 0,
-  "durationMs": 13,
+  "durationMs": 4,
   "hostState": "hook_complete",
   "reportHint": ".mimosa/reports/"
 }

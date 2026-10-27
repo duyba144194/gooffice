@@ -12,6 +12,7 @@
 --with-myspell-dicts
 --with-package-format=dmg
 --enable-odk
+--without-doxygen
 --enable-mergelibs=more
 --without-system-fontconfig
 --without-system-freetype
