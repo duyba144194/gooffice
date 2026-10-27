@@ -60,6 +60,11 @@
 - Smoke-test headless trong WSL: PASS
 - Lưu ý: build phải làm trên ext4 của WSL (~/core), không làm việc trên /mnt/c (libffi hỏng)
 
+### ✅ Linux arm64 — HOÀN THÀNH qua CI (28-10, run 40541595569)
+- 44 deb arm64 tại `C:\Users\NAM\GoOffice\dist\linux-arm64\` (234MB, có dict-vi)
+- Fix then chốt: `--without-dotnet` (runner ARM có dotnet hỏng → net_ure packaging fail)
+- macos-arm64/x64: đang chờ capacity runner GitHub (job bị hủy sau 15 phút không có runner — cần rerun thủ công hoặc chờ pool trống)
+
 ### ✅ Windows arm64 — HOÀN THÀNH (23:37, 27-10, cross-compile trên máy local)
 4 MSI tại `C:\Users\NAM\GoOffice\dist\win-arm64\`:
 | File | Size |
