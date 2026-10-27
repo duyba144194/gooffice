@@ -19,6 +19,7 @@
 --enable-release-build
 --disable-lto
 --enable-epm
+--without-dotnet
 
 # --- GoOffice branding ---
 --with-product-name=GoOffice
