@@ -52,7 +52,8 @@ jobs:
         run: |
           git clone --depth 1 --branch "$LO_TAG" --config core.autocrlf=false https://github.com/LibreOffice/core "$RUNNER_TEMP/core"
           cd "$RUNNER_TEMP/core"
-          git -c user.name=GoOfficeCI -c user.email=ci@gooffice.local apply \
+          git config core.autocrlf false
+          git -c core.autocrlf=false -c user.name=GoOfficeCI -c user.email=ci@gooffice.local apply --ignore-whitespace \
             "$GITHUB_WORKSPACE/patches/0001-wsl-aware-branding-path.patch" \
             "$GITHUB_WORKSPACE/patches/0002-gooffice-product-blocks-in-openoffice-lst.patch" \
             "$GITHUB_WORKSPACE/patches/0003-gooffice-msi-guids.patch" \
@@ -78,7 +79,9 @@ jobs:
         if: startsWith(matrix.platform, 'macos')
         shell: bash
         run: |
-          brew install autoconf automake ccache ant
+          brew install autoconf automake ccache ant make
+          # expose GNU make 4.x as `make` (system make 3.81 is too old for LO)
+          echo "$(brew --prefix)/opt/make/libexec/gnubin" >> "$GITHUB_PATH"
           brew install --cask temurin@17
 
       - name: Install deps (Windows arm64 cross)
