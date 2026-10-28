@@ -21,3 +21,15 @@ index 3a9b342e6..0d573f7f3 100644
  	) \
  	emboleobj \
  	package2 \
+diff --git a/RepositoryModule_build.mk b/RepositoryModule_build.mk
+index c39b65cf9..695deb6ad 100644
+--- a/RepositoryModule_build.mk
++++ b/RepositoryModule_build.mk
+@@ -10,6 +10,7 @@
+ $(eval $(call gb_Module_Module,cross_toolset))
+ 
+ $(eval $(call gb_Module_add_moduledirs,cross_toolset,\
++	apple_remote \
+ 	basegfx \
+ 	binaryurp \
+ 	bridges \
