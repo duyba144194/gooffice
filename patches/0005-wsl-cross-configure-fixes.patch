@@ -1,5 +1,5 @@
 diff --git a/configure.ac b/configure.ac
-index eb63dc1c7..e7c7e31ab 100644
+index eb63dc1c7..f455ec87d 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -6280,7 +6280,14 @@ if test "$cross_compiling" = "yes"; then
@@ -27,13 +27,16 @@ index eb63dc1c7..e7c7e31ab 100644
              ;;
          esac
      else
-@@ -6314,14 +6324,33 @@ if test "$cross_compiling" = "yes"; then
+@@ -6314,14 +6324,36 @@ if test "$cross_compiling" = "yes"; then
      # when cross-compiling for aarch64, overriding the defaults below
      # similarly: at least skia headers need to be available in the cross-toolset
      test "${PLATFORMID}" = "windows_aarch64" && sub_conf_opts="$sub_conf_opts --enable-openssl --with-tls=openssl --enable-skia"
 +    # GoOffice patch: the darwin cross BUILD side needs an explicit TLS
 +    # backend for curl, mirroring what the host side selects
 +    test "${_os}" = "Darwin" && sub_conf_opts="$sub_conf_opts --enable-openssl --with-tls=openssl --enable-skia"
++    # GoOffice patch: keep the BUILD side in the same release mode so
++    # SDKDIRNAME and friends agree between the two configurations
++    test -n "$enable_release_build" && sub_conf_opts="$sub_conf_opts --enable-release-build"
      # cross-compilations don't necessarily enable python support in the product/the sub-configure needs to know
      # that the minimum supported python version is 3.7 or later...
      test "$with_system_harfbuzz" != "yes" && sub_conf_opts="$sub_conf_opts NEED_MESON=TRUE"
@@ -61,7 +64,7 @@ index eb63dc1c7..e7c7e31ab 100644
          --disable-cairo-canvas \
          --disable-cups \
          --disable-customtarget-components \
-@@ -6480,7 +6509,10 @@ if test "$cross_compiling" = "yes"; then
+@@ -6480,7 +6512,10 @@ if test "$cross_compiling" = "yes"; then
      BUILD_PATH=$PATH
      PATH=$OLD_PATH
  
@@ -73,7 +76,7 @@ index eb63dc1c7..e7c7e31ab 100644
      echo "$line" >>build-config
  
      for V in $DIRECT_FOR_BUILD_SETTINGS; do
-@@ -6504,7 +6536,7 @@ if test "$cross_compiling" = "yes"; then
+@@ -6504,7 +6539,7 @@ if test "$cross_compiling" = "yes"; then
      for V in INSTDIR INSTROOT WORKDIR; do
          VV='$'$V
          VV=`eval "echo $VV"`
@@ -82,7 +85,7 @@ index eb63dc1c7..e7c7e31ab 100644
          if test -n "$VV"; then
              line="${V}_FOR_BUILD='$VV'"
              echo "$line" >>build-config
-@@ -6514,7 +6546,8 @@ if test "$cross_compiling" = "yes"; then
+@@ -6514,7 +6549,8 @@ if test "$cross_compiling" = "yes"; then
      )
      test -f CONF-FOR-BUILD/build-config || AC_MSG_ERROR([setup/configure for BUILD side failed, see CONF-FOR-BUILD/config.log])
      test -f config_build.mk || AC_MSG_ERROR([A file called config_build.mk was supposed to have been copied here, but it isn't found])

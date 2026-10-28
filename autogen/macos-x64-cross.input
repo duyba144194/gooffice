@@ -19,6 +19,7 @@
 --without-system-freetype
 --disable-online-update
 --enable-release-build
+--without-dotnet
 
 # --- GoOffice branding ---
 --with-product-name=GoOffice
