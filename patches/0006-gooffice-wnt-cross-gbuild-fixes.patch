@@ -1,26 +1,3 @@
-diff --git a/Repository.mk b/Repository.mk
-index 3a9b342e6..dadc00d66 100644
---- a/Repository.mk
-+++ b/Repository.mk
-@@ -521,7 +521,7 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,ooo, \
- 	) \
- 	$(if $(filter $(OS),MACOSX), \
- 		$(if $(ENABLE_MACOSX_SANDBOX),, \
--			AppleRemote \
-+			$(if $(filter arm64-apple-darwin,$(BUILD_PLATFORM)),,AppleRemote) \
- 		) \
- 		fps_aqua \
- 	) \
-@@ -689,7 +689,8 @@ $(eval $(call gb_Helper_register_libraries_for_install,PLAINLIBS_OOO,ooo, \
- 	$(if $(and $(ENABLE_GTK3), $(filter LINUX %BSD SOLARIS,$(OS))), libreofficekitgtk) \
- 	$(if $(and $(ENABLE_GTKTILEDVIEWER), $(filter WNT,$(OS))), libreofficekitgtk) \
- 	$(if $(ENABLE_JAVA), \
--		$(if $(filter $(OS),MACOSX),,officebean) \
-+		$(if $(filter $(OS),MACOSX),, \
-+			$(if $(filter AARCH64,$(CPUNAME)),,officebean)) \
- 	) \
- 	emboleobj \
- 	package2 \
 diff --git a/bean/Module_bean.mk b/bean/Module_bean.mk
 index 08d939076..6ba8dbece 100644
 --- a/bean/Module_bean.mk

@@ -64,6 +64,7 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0003-gooffice-msi-guids.patch" \
             "$GITHUB_WORKSPACE/patches/0004-gooffice-in-sysui-productlist.patch" \
             "$GITHUB_WORKSPACE/patches/0005-wsl-cross-configure-fixes.patch" \
+            "$GITHUB_WORKSPACE/patches/0006-gooffice-wnt-cross-gbuild-fixes.patch" \
             "$GITHUB_WORKSPACE/patches/0007-macos-cross-appleremote.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
