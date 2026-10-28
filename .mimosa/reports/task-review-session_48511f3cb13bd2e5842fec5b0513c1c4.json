@@ -1,6 +1,6 @@
 {
   "schema_version": "mimosa-task-review/v2",
-  "run_id": "20261027T044750414Z-29056-69374362fd2f",
+  "run_id": "20261028T022616618Z-27476-bda34844ffb5",
   "run_status": "completed",
   "errors": [],
   "coverage": {
@@ -49,12 +49,12 @@
     "reasons": [],
     "reasons_truncated": false
   },
-  "generated_at": "2026-10-27T04:47:50.414Z",
+  "generated_at": "2026-10-28T02:26:16.618Z",
   "session_id": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "target": ".",
-  "revision": "dc78489ccb0b95a3fae8f71f0d8ddb711cdc695b",
+  "revision": "899d36d35e8831df56b3aece0347f1d282dc24c5",
   "rules_version": "unavailable",
-  "diff_hash": "94ee0842f2e97dfbb1652bb8f1a028f98cb3eb8d41e3dc38371bfacde786cb8f",
+  "diff_hash": "3531b6bf158e3b20165c4a33cd11bc083bc738d5f247e3d5b4aeed8af31de5c5",
   "diff": {
     "algorithm": "sha256",
     "changed_file_count": 1,
@@ -63,19 +63,35 @@
         "file": ".github/workflows/build.yml",
         "ranges": [
           {
-            "start": 54,
-            "end": 59
+            "start": 44,
+            "end": 46
+          },
+          {
+            "start": 62,
+            "end": 63
+          },
+          {
+            "start": 85,
+            "end": 85
+          },
+          {
+            "start": 125,
+            "end": 127
+          },
+          {
+            "start": 134,
+            "end": 143
           }
         ],
-        "before_hash": "55222ff2fc06470f21b48d62bced2a9084339bdfc1910c71afbd77eeca490ef6",
-        "after_hash": "05899a96d0245c7454c1f7cc4217eb09620b09df054e083683a5c09e6bf567de"
+        "before_hash": "7a71d2bc49a6789943fe8847904c934866e55d016be1632c26abf7c23b65836d",
+        "after_hash": "33a779e57b7fa774b1d44c46fe1dfab2d7a7158ac931cc0cd1f29f76c8cdac27"
       }
     ]
   },
   "timing": {
-    "started_at": "2026-10-27T04:47:49.133Z",
-    "completed_at": "2026-10-27T04:47:50.414Z",
-    "duration_ms": 1281,
+    "started_at": "2026-10-28T02:26:15.314Z",
+    "completed_at": "2026-10-28T02:26:16.618Z",
+    "duration_ms": 1304,
     "measurement": "hook_wall_clock"
   },
   "tokens": {
@@ -90,8 +106,8 @@
     "profile": "gate",
     "operation": "Stop",
     "outcome": "complete",
-    "latencyMs": 1281,
-    "peakMemoryBytes": 89108480,
+    "latencyMs": 1304,
+    "peakMemoryBytes": 89509888,
     "memoryMeasurement": "max-observed-process-rss",
     "scannedFiles": 0,
     "cache": {
@@ -118,8 +134,8 @@
   "finding_events": [],
   "findings": [],
   "artifacts": {
-    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261027T044750414Z-29056-69374362fd2f.json",
+    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261028T022616618Z-27476-bda34844ffb5.json",
     "latest_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4.json",
-    "history_summary": ".mimosa/history/run-20261027T044750414Z-29056-69374362fd2f.json"
+    "history_summary": ".mimosa/history/run-20261028T022616618Z-27476-bda34844ffb5.json"
   }
 }

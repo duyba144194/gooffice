@@ -41,6 +41,9 @@ jobs:
           - { platform: macos-arm64, os: macos-15,   input: macos-arm64.input }
           - { platform: macos-x64,   os: macos-13,   input: macos-x64.input }
           - { platform: linux-arm64, os: ubuntu-24.04-arm, input: linux-arm64.input }
+          # Intel DMG cross-built on an arm64 runner: GitHub's Intel runners
+          # (macos-13) are no longer obtainable on the free tier
+          - { platform: macos-x64-cross, os: macos-15, input: macos-x64-cross.input }
         # Windows arm64 is built locally on the maintainer machine (MSVC arm64
         # cross tools + 20 cores beat a 4-core free runner that cannot finish
         # within the 350-min job limit and has no ccache for MSVC).

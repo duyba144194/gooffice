@@ -1,0 +1,31 @@
+# GoOffice — autogen.input for macOS x64 Intel, cross-compiled on an arm64
+# macos-15 runner (GitHub has retired usable Intel runners; Xcode clang still
+# ships -arch x86_64 and the macOS SDK keeps x86_64 slices)
+
+--host=x86_64-apple-darwin
+--with-epm
+--enable-scripting-beanshell
+--enable-scripting-javascript
+--enable-ext-nlpsolver
+--enable-extension-integration
+--without-system-postgresql
+--with-help=html
+--with-myspell-dicts
+--with-package-format=dmg
+--enable-odk
+--without-doxygen
+--without-junit
+--enable-mergelibs=more
+--without-system-fontconfig
+--without-system-freetype
+--disable-online-update
+--enable-release-build
+
+# --- GoOffice branding ---
+--with-product-name=GoOffice
+--with-vendor=GoOffice Project
+--with-package-version=1.0.0.0
+--with-branding=/Users/runner/work/gooffice/gooffice/branding
+--with-macosx-bundle-identifier=org.gooffice.script
+--with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
+--with-lang=vi
