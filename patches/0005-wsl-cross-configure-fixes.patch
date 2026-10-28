@@ -1,5 +1,5 @@
 diff --git a/configure.ac b/configure.ac
-index eb63dc1c7..7e2141249 100644
+index eb63dc1c7..e7c7e31ab 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -6280,7 +6280,14 @@ if test "$cross_compiling" = "yes"; then
@@ -33,7 +33,7 @@ index eb63dc1c7..7e2141249 100644
      test "${PLATFORMID}" = "windows_aarch64" && sub_conf_opts="$sub_conf_opts --enable-openssl --with-tls=openssl --enable-skia"
 +    # GoOffice patch: the darwin cross BUILD side needs an explicit TLS
 +    # backend for curl, mirroring what the host side selects
-+    test "${_os}" = "Darwin" && sub_conf_opts="$sub_conf_opts --enable-openssl --with-tls=openssl"
++    test "${_os}" = "Darwin" && sub_conf_opts="$sub_conf_opts --enable-openssl --with-tls=openssl --enable-skia"
      # cross-compilations don't necessarily enable python support in the product/the sub-configure needs to know
      # that the minimum supported python version is 3.7 or later...
      test "$with_system_harfbuzz" != "yes" && sub_conf_opts="$sub_conf_opts NEED_MESON=TRUE"
