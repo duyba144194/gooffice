@@ -148,6 +148,13 @@ jobs:
           sed "s|/home/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|; \
                s|/Users/runner/work/gooffice/gooffice/branding|$GITHUB_WORKSPACE/branding|" \
             "$GITHUB_WORKSPACE/autogen/${{ matrix.input }}" > autogen.input
+          if [ "$(uname -s)" = "Darwin" ]; then
+            # cross builds run a BUILD-side configure that cannot auto-detect
+            # the JDK; patch 0005 forwards this option to it
+            if [ -d "$(brew --prefix)/opt/temurin@17/libexec/openjdk.jdk/Contents/Home" ]; then
+              echo "--with-jdk-home=$(brew --prefix)/opt/temurin@17/libexec/openjdk.jdk/Contents/Home" >> autogen.input
+            fi
+          fi
           ./autogen.sh
 
       - name: Configure (Windows arm64 cross, Git Bash)
