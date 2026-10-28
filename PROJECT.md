@@ -1,7 +1,20 @@
 # GoOffice — Kế hoạch & Trạng thái
 
 > Bộ office mã nguồn mở dựa trên LibreOffice, mang thương hiệu GoOffice.
-> Cập nhật: 2026-10-26
+> **Cập nhật 28-10-2026: 5/5 NỀN TẢNG HOÀN THÀNH** 🏆
+
+## Sản phẩm bàn giao (C:\Users\NAM\GoOffice\dist\)
+
+| Nền tảng | Files | Nguồn build |
+|---|---|---|
+| win-x64 | 4 MSI (main 222MB, helppack en/vi, SDK) | local |
+| win-arm64 | 4 MSI aarch64 (main 206MB, helppack, SDK) | local cross |
+| linux-x64 | 44 deb (231MB) | WSL2 ext4 |
+| linux-arm64 | 44 deb arm64 (224MB, CI artifact) | GitHub CI |
+| macos-arm64 | 3 DMG aarch64 (main 282MB, langpack vi, SDK) | GitHub CI |
+| macos-x64 | 3 DMG x86-64 (main 271MB, langpack vi, SDK) | GitHub CI **cross trên runner ARM** |
+
+Chi tiết build/quy trình/patch: xem phần Trạng thái bên dưới + git log + docs/LEGAL-MPL2.md
 
 ## Quyết định đã chốt
 
