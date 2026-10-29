@@ -1,14 +1,14 @@
 {
   "schemaVersion": "mimosa-hook-status/v1",
-  "recordedAt": "2026-10-29T18:26:32.911Z",
+  "recordedAt": "2026-10-29T18:28:27.885Z",
   "sessionId": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "event": "PostToolUse",
-  "toolName": "Write",
-  "file": "docs/QA-REPORT.md",
+  "toolName": "Edit",
+  "file": "PROJECT.md",
   "outcome": "clear",
   "coverage": "complete",
   "findingCount": 0,
-  "durationMs": 8,
+  "durationMs": 12,
   "hostState": "hook_complete",
   "reportHint": ".mimosa/reports/"
 }

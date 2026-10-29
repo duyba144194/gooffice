@@ -1,7 +1,17 @@
 # GoOffice — Kế hoạch & Trạng thái
 
 > Bộ office mã nguồn mở dựa trên LibreOffice, mang thương hiệu GoOffice.
-> **Cập nhật 28-10-2026: 5/5 NỀN TẢNG HOÀN THÀNH** 🏆
+> **30-10-2026: 5/5 nền tảng + QA tổng thể hoàn tất** 🏆 — chi tiết QA: `docs/QA-REPORT.md`
+
+## Kết quả QA (30-10)
+- **License**: phần tự viết sạch (không verbatim GPL/Apache); 9 patch chỉ chạm file MPL; install có license.txt/NOTICE/CREDITS
+- **Dependencies**: 23 thư viện bundled đều thế hệ mới, không dính dải CVE đã biết
+- **Installer**: cài/gỡ/nâng cấp exit 0; chạy không-admin OK
+- **Roundtrip 8 định dạng**: docx/odt/xlsx/ods/pptx/odp/csv/pdf — nội dung, công thức, track changes, notes, VN **giữ nguyên 100%**; .docm mở OK
+- **Render vs MS Word**: bố cục/spacing/ngắt trang giống hệt; VN đủ dấu
+- **Fonts**: 46 font VN-ready (Liberation/Caladea/Carlito/DejaVu) cài vào Windows\Fonts
+- **Repro clean-build**: đang chạy nền WSL (log `logs/repro-build.log`)
+- **Còn mở**: (1) chạy `GoOffice\setup\reinstall-batch.ps1` (1 UAC) để lên bản icon; (2) icon Linux/macOS vẫn artwork gốc LO (cosmetic)
 
 ## Sản phẩm bàn giao (C:\Users\NAM\GoOffice\dist\)
 
