@@ -1,14 +1,14 @@
 {
   "schemaVersion": "mimosa-hook-status/v1",
-  "recordedAt": "2026-10-28T15:01:38.412Z",
+  "recordedAt": "2026-10-29T18:26:32.911Z",
   "sessionId": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "event": "PostToolUse",
-  "toolName": "Edit",
-  "file": "C:\\Users\\NAM\\.zcode\\cli\\memories\\projects\\office-3757118207eaf06f\\memory\\gooffice-project.md",
+  "toolName": "Write",
+  "file": "docs/QA-REPORT.md",
   "outcome": "clear",
   "coverage": "complete",
   "findingCount": 0,
-  "durationMs": 4,
+  "durationMs": 8,
   "hostState": "hook_complete",
   "reportHint": ".mimosa/reports/"
 }
