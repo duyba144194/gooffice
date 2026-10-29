@@ -38,6 +38,24 @@ dấu phẩy trong ngoặc kép.
 | PDF export | ✅ 6/6 (docx/odt/xlsx/pptx/ods/docm) có nội dung nhiều trang |
 | .docm (macro) | ✅ mở + export PDF bình thường |
 
+## 4b. Roundtrip mở rộng (v2, 30-10) — các case khó còn lại
+Mẫu được author bằng chính MS Word/Excel COM (nội dung thật, không fake):
+
+| Case | Phương pháp | Kết quả |
+|---|---|---|
+| **Macro VBA (docm)** | Word COM tạo vbaProject.bin thật (AutoOpen + module) → GoOffice roundtrip filter `MS Word 2007 XML VBA` | ✅ **code VBA giữ nguyên 2/2 modules** (ThisDocument.cls, Module1.bas — xác minh bằng olevba) |
+| **Macro VBA (xlsm)** | Excel COM tạo Workbook_Open → roundtrip `Calc MS Excel 2007 VBA XML` | ✅ vbaProject.bin tồn tại, **code giữ nguyên 3/3 modules** |
+| **Chú thích (comments)** | Word COM chèn comment vào paragraph → docx→odt | ✅ `office:annotation` bảo tồn trong content.xml |
+| **Hình nổi** | Word COM `Shapes.AddPicture` + wrap-square → docx→odt | ✅ draw:frame + wrap bảo tồn |
+| **Ngắt trang rõ ràng** | Word COM `InsertBreak(wdPageBreak)` → docx→pdf | ✅ đúng 2 trang như kỳ vọng |
+| **Biểu đồ surviving** | BarChart (openpyxl) → xlsx→ods→xlsx | ✅ `xl/charts/chart1.xml` + style/colors còn nguyên |
+| **.odp trực tiếp** | odp→pdf (2 trang), odp→pptx→odp | ✅ title/notes giữ nguyên |
+
+Ghi chú kỹ thuật: vbaProject.bin sau roundtrip có hash khác (LO viết lại OLE container)
+nhưng **nội dung macro (mỗi dòng code) được xác minh giữ nguyên bằng olevba** — đúng
+hành vi "VBA preservation" của LibreOffice. Security setting AccessVBOM đã bật tạm để
+author mẫu và đã khôi phục = 0 sau khi xong.
+
 ## 5. So sánh render với Microsoft Office (Word 16 có trên máy)
 Cùng file test-hard.docx → PDF bởi Word và bởi GoOffice, render 1:1:
 - ✅ Bố cục, line spacing, ngắt trang, vị trí footer: **giống hệt**
