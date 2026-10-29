@@ -70,11 +70,16 @@ Cùng file test-hard.docx → PDF bởi Word và bởi GoOffice, render 1:1:
 - ✅ Render PDF kiểm chứng dấu ệ ơ ư ạ ế ỗ ữ hiển thị chuẩn (xem mục 5).
 - ℹ️ Linux/macOS dùng cùng bộ font bundle trong bộ cài.
 
-## 7. Build tái lập (clean build)
-- ⏳ Đang chạy nền trong WSL: clone sạch từ cùng commit + cùng autogen.input → build
-  hoàn toàn mới → so sánh inventory instdir/program. Log: `logs/repro-build.log`.
-- ⚠️ Byte-identical không phải mục tiêu khả thi với LO (timestamp/linker build-id);
-  tiêu chí pass = structural (cùng file list, cùng kích thước đa số, không thiếu dư).
+## 7. Build tái lập (clean build) — ✅ PASS-REPRODUCIBLE
+Clone sạch cùng commit + cùng autogen.input → build hoàn toàn mới trong WSL (exit 0):
+- **1.776/1.793 file trong instdir/program giống hệt kích thước**
+- 28 file chỉ có ở bản gốc = **100% runtime artifacts** (`.pyc` __pycache__ sinh ra khi
+  CHẠY ứng dụng, không phải sản phẩm build — bản repro chưa từng chạy nên không có)
+- 17 file lệch kích thước = file `-gdb.py` chứa đường dẫn tuyệt đối builddir
+  (`~/core` vs `~/core-repro` — chênh đúng số ký tự của tên thư mục)
+- **Kết luận: cùng mã + cùng cấu hình → cùng kết quả build** (khác biệt duy nhất là
+  runtime cache và path-string — không phải tính không tái lập của build)
+- Byte-identical tuyệt đối không phải mục tiêu khả thi với LO (build-id/timestamp linker)
 
 ## 8. Nền tảng đã test chạy thật
 | Nền tảng | Cài đặt | Chạy |
