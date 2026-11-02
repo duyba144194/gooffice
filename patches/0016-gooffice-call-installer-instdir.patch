@@ -1,0 +1,27 @@
+diff --git a/solenv/bin/call_installer.sh b/solenv/bin/call_installer.sh
+index 8b8032f7f..9f1984abe 100755
+--- a/solenv/bin/call_installer.sh
++++ b/solenv/bin/call_installer.sh
+@@ -1,5 +1,22 @@
+ #!/bin/sh
+ 
++# GoOffice fix: guarantee INSTDIR in the installer environment. The
++# installer resolves every packaged file via $ENV{INSTDIR} (scriptitems.pm
++# source resolution + installer.pm FILELIST expansion). On CI runners the
++# make-exported INSTDIR did not reach this perl process (0 "SUCCESS:
++# INSTDIR Source" lines in logs while WORKDIR/SRCDIR were fine), so
++# packaging died with "Source for X not found" errors even though instdir
++# was fully populated. WORKDIR is validated by the installer itself and
++# instdir is always its sibling, so re-derive and export when missing.
++if [ -z "${INSTDIR:-}" ]; then
++    if [ -n "${WORKDIR:-}" ]; then
++        INSTDIR="$(dirname "${WORKDIR}")/instdir"
++        export INSTDIR
++        echo "call_installer: INSTDIR was unset, derived ${INSTDIR}"
++    fi
++fi
++echo "call_installer: INSTDIR=[${INSTDIR:-unset}] WORKDIR=[${WORKDIR:-unset}] SRCDIR=[${SRCDIR:-unset}]"
++
+ # unpack parameters
+ VERBOSITY=$1; shift
+ MSITEMPL=$(echo "$@" | cut -d ':' -f 1)
