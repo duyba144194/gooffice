@@ -1,0 +1,40 @@
+diff --git a/solenv/bin/modules/installer/scriptitems.pm b/solenv/bin/modules/installer/scriptitems.pm
+index 555c44c2a..cfb869471 100644
+--- a/solenv/bin/modules/installer/scriptitems.pm
++++ b/solenv/bin/modules/installer/scriptitems.pm
+@@ -1094,6 +1094,35 @@ sub remove_Files_Without_Sourcedirectory
+             my $styles = $onefile->{'Styles'};
+             my $filename = $onefile->{'Name'};
+ 
++            # GoOffice fix: when sourcepath is empty, try to locate the file
++            # by name in common output directories. This handles generated
++            # files that the manifest registers with empty sourcepath due to
++            # gbuild cross-compile / CI build path handling.
++            if (!$installer::globals::languagepack && !$installer::globals::helppack) {
++                my $workdir = $ENV{WORKDIR} // "";
++                my $instroot = $ENV{INSTROOT} // "";
++                my @search_dirs = (
++                    "$instroot/program",
++                    "$instroot/bin",
++                    "$workdir/Executable",
++                    "$workdir/LinkedLibraryTarget",
++                    "$workdir/LinkedExecutableTarget",
++                    "$workdir/Library",
++                    "$workdir/XcuLangpackTarget",
++                    "$workdir/CustomTarget/postprocess/registry",
++                    "$workdir/CustomTarget/sysui",
++                );
++                for my $sd (@search_dirs) {
++                    my $full = $sd . "/" . $filename;
++                    next unless defined $sd;
++                    if (-f $full) {
++                        $sourcepath = $full;
++                        last;
++                    }
++                }
++                next if $sourcepath eq "";
++            }
++
+             if ( ! $installer::globals::languagepack && !$installer::globals::helppack)
+             {
+                 $infoline = "ERROR: Removing file $filename from file list.\n";
