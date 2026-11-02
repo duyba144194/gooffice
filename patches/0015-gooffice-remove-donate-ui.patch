@@ -237,10 +237,10 @@ index 386756012..d41981f5b 100644
    <menu:menuseparator/>
  </menu:menupopup>
 diff --git a/sfx2/uiconfig/ui/startcenter.ui b/sfx2/uiconfig/ui/startcenter.ui
-index 0b4fe4a0d..4565a9ee0 100644
+index 0b4fe4a0d..54eb11063 100644
 --- a/sfx2/uiconfig/ui/startcenter.ui
 +++ b/sfx2/uiconfig/ui/startcenter.ui
-@@ -448,38 +448,7 @@
+@@ -448,38 +448,8 @@
                          <property name="relief">none</property>
                          <property name="use-underline">True</property>
                          <property name="always-show-image">True</property>
@@ -276,6 +276,7 @@ index 0b4fe4a0d..4565a9ee0 100644
 -                            </child>
 -                          </object>
 -                        </child>
++                        <property name="label" translatable="no">Donate</property>
 +                        <property name="visible">False</property>
                        </object>
                        <packing>
