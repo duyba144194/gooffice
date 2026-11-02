@@ -1,0 +1,385 @@
+diff --git a/basctl/uiconfig/basicide/menubar/menubar.xml b/basctl/uiconfig/basicide/menubar/menubar.xml
+index 8221f4d9b..06a1260df 100644
+--- a/basctl/uiconfig/basicide/menubar/menubar.xml
++++ b/basctl/uiconfig/basicide/menubar/menubar.xml
+@@ -174,8 +174,6 @@
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+             <menu:menuseparator/>
+-            <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-            <menu:menuitem menu:id=".uno:Donation"/>
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+             <menu:menuitem menu:id=".uno:About"/>
+diff --git a/chart2/uiconfig/menubar/menubar.xml b/chart2/uiconfig/menubar/menubar.xml
+index 1c0304f6d..4f6540a7f 100644
+--- a/chart2/uiconfig/menubar/menubar.xml
++++ b/chart2/uiconfig/menubar/menubar.xml
+@@ -169,8 +169,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/dbaccess/uiconfig/dbapp/menubar/menubar.xml b/dbaccess/uiconfig/dbapp/menubar/menubar.xml
+index 7ef526f54..b5a87e9ab 100644
+--- a/dbaccess/uiconfig/dbapp/menubar/menubar.xml
++++ b/dbaccess/uiconfig/dbapp/menubar/menubar.xml
+@@ -155,8 +155,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/dbaccess/uiconfig/dbquery/menubar/menubar.xml b/dbaccess/uiconfig/dbquery/menubar/menubar.xml
+index 52f055cd2..343942b10 100644
+--- a/dbaccess/uiconfig/dbquery/menubar/menubar.xml
++++ b/dbaccess/uiconfig/dbquery/menubar/menubar.xml
+@@ -111,8 +111,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/dbaccess/uiconfig/dbrelation/menubar/menubar.xml b/dbaccess/uiconfig/dbrelation/menubar/menubar.xml
+index 1de2991b3..29d78df4f 100644
+--- a/dbaccess/uiconfig/dbrelation/menubar/menubar.xml
++++ b/dbaccess/uiconfig/dbrelation/menubar/menubar.xml
+@@ -94,8 +94,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/dbaccess/uiconfig/dbtable/menubar/menubar.xml b/dbaccess/uiconfig/dbtable/menubar/menubar.xml
+index 0ee0275ff..0c6d33a84 100644
+--- a/dbaccess/uiconfig/dbtable/menubar/menubar.xml
++++ b/dbaccess/uiconfig/dbtable/menubar/menubar.xml
+@@ -94,8 +94,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/dbaccess/uiconfig/dbtdata/menubar/menubar.xml b/dbaccess/uiconfig/dbtdata/menubar/menubar.xml
+index a00d50fbd..5bc11a837 100644
+--- a/dbaccess/uiconfig/dbtdata/menubar/menubar.xml
++++ b/dbaccess/uiconfig/dbtdata/menubar/menubar.xml
+@@ -119,8 +119,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/extensions/uiconfig/sbibliography/menubar/menubar.xml b/extensions/uiconfig/sbibliography/menubar/menubar.xml
+index ed8bb5095..2b714aef1 100644
+--- a/extensions/uiconfig/sbibliography/menubar/menubar.xml
++++ b/extensions/uiconfig/sbibliography/menubar/menubar.xml
+@@ -68,8 +68,6 @@
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+             <menu:menuseparator/>
+-            <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-            <menu:menuitem menu:id=".uno:Donation"/>
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+             <menu:menuitem menu:id=".uno:About"/>
+diff --git a/framework/uiconfig/startmodule/menubar/menubar.xml b/framework/uiconfig/startmodule/menubar/menubar.xml
+index b7309cb05..430893739 100644
+--- a/framework/uiconfig/startmodule/menubar/menubar.xml
++++ b/framework/uiconfig/startmodule/menubar/menubar.xml
+@@ -70,8 +70,6 @@
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+             <menu:menuseparator/>
+-            <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-            <menu:menuitem menu:id=".uno:Donation"/>
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+             <menu:menuitem menu:id=".uno:About"/>
+diff --git a/officecfg/registry/schema/org/openoffice/Office/Common.xcs b/officecfg/registry/schema/org/openoffice/Office/Common.xcs
+index 2d57c5111..3aaab8f08 100644
+--- a/officecfg/registry/schema/org/openoffice/Office/Common.xcs
++++ b/officecfg/registry/schema/org/openoffice/Office/Common.xcs
+@@ -5127,7 +5127,7 @@
+         <info>
+           <desc>Determines whether to show a donation button in the start center or extension.</desc>
+         </info>
+-        <value>true</value>
++        <value>false</value>
+       </prop>
+       <prop oor:name="UseOpenCL" oor:type="xs:boolean" oor:nillable="false">
+         <info>
+diff --git a/officecfg/registry/schema/org/openoffice/Office/UI/Infobar.xcs b/officecfg/registry/schema/org/openoffice/Office/UI/Infobar.xcs
+index 867e64fd7..97412ccf1 100644
+--- a/officecfg/registry/schema/org/openoffice/Office/UI/Infobar.xcs
++++ b/officecfg/registry/schema/org/openoffice/Office/UI/Infobar.xcs
+@@ -34,13 +34,13 @@
+         <info>
+           <desc>Whether the Infobar showing the call for donations is enabled</desc>
+         </info>
+-        <value>true</value>
++        <value>false</value>
+       </prop>
+       <prop oor:name="GetInvolved" oor:type="xs:boolean" oor:nillable="false">
+         <info>
+           <desc>Whether the Infobar showing the call to 'Get Involved' is enabled</desc>
+         </info>
+-        <value>true</value>
++        <value>false</value>
+       </prop>
+       <prop oor:name="HyphenationMissing" oor:type="xs:boolean" oor:nillable="false">
+         <info>
+diff --git a/reportdesign/uiconfig/dbreport/menubar/menubar.xml b/reportdesign/uiconfig/dbreport/menubar/menubar.xml
+index 2838f3208..ddfd0d54a 100644
+--- a/reportdesign/uiconfig/dbreport/menubar/menubar.xml
++++ b/reportdesign/uiconfig/dbreport/menubar/menubar.xml
+@@ -285,8 +285,6 @@
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+             <menu:menuseparator/>
+-            <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-            <menu:menuitem menu:id=".uno:Donation"/>
+             <menu:menuseparator/>
+             <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+             <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sc/uiconfig/scalc/menubar/menubar.xml b/sc/uiconfig/scalc/menubar/menubar.xml
+index fe3c46feb..2facf1223 100644
+--- a/sc/uiconfig/scalc/menubar/menubar.xml
++++ b/sc/uiconfig/scalc/menubar/menubar.xml
+@@ -767,8 +767,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sc/uiconfig/scalc/popupmenu/notebookbar.xml b/sc/uiconfig/scalc/popupmenu/notebookbar.xml
+index 386756012..d41981f5b 100644
+--- a/sc/uiconfig/scalc/popupmenu/notebookbar.xml
++++ b/sc/uiconfig/scalc/popupmenu/notebookbar.xml
+@@ -18,7 +18,6 @@
+   <menu:menuitem menu:id=".uno:OptionsTreeDialog"/>
+   <menu:menuseparator/>
+   <menu:menuitem menu:id=".uno:HelpIndex"/>
+-  <menu:menuitem menu:id=".uno:Donation"/>
+   <menu:menuitem menu:id=".uno:About"/>
+   <menu:menuseparator/>
+ </menu:menupopup>
+diff --git a/sd/uiconfig/sdraw/menubar/menubar.xml b/sd/uiconfig/sdraw/menubar/menubar.xml
+index c3e787408..49b2f6661 100644
+--- a/sd/uiconfig/sdraw/menubar/menubar.xml
++++ b/sd/uiconfig/sdraw/menubar/menubar.xml
+@@ -647,8 +647,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sd/uiconfig/sdraw/popupmenu/notebookbar.xml b/sd/uiconfig/sdraw/popupmenu/notebookbar.xml
+index 386756012..d41981f5b 100644
+--- a/sd/uiconfig/sdraw/popupmenu/notebookbar.xml
++++ b/sd/uiconfig/sdraw/popupmenu/notebookbar.xml
+@@ -18,7 +18,6 @@
+   <menu:menuitem menu:id=".uno:OptionsTreeDialog"/>
+   <menu:menuseparator/>
+   <menu:menuitem menu:id=".uno:HelpIndex"/>
+-  <menu:menuitem menu:id=".uno:Donation"/>
+   <menu:menuitem menu:id=".uno:About"/>
+   <menu:menuseparator/>
+ </menu:menupopup>
+diff --git a/sd/uiconfig/simpress/menubar/menubar.xml b/sd/uiconfig/simpress/menubar/menubar.xml
+index b721f938b..5cdc457ce 100644
+--- a/sd/uiconfig/simpress/menubar/menubar.xml
++++ b/sd/uiconfig/simpress/menubar/menubar.xml
+@@ -679,8 +679,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sd/uiconfig/simpress/popupmenu/notebookbar.xml b/sd/uiconfig/simpress/popupmenu/notebookbar.xml
+index 386756012..d41981f5b 100644
+--- a/sd/uiconfig/simpress/popupmenu/notebookbar.xml
++++ b/sd/uiconfig/simpress/popupmenu/notebookbar.xml
+@@ -18,7 +18,6 @@
+   <menu:menuitem menu:id=".uno:OptionsTreeDialog"/>
+   <menu:menuseparator/>
+   <menu:menuitem menu:id=".uno:HelpIndex"/>
+-  <menu:menuitem menu:id=".uno:Donation"/>
+   <menu:menuitem menu:id=".uno:About"/>
+   <menu:menuseparator/>
+ </menu:menupopup>
+diff --git a/sfx2/uiconfig/ui/startcenter.ui b/sfx2/uiconfig/ui/startcenter.ui
+index 0b4fe4a0d..4565a9ee0 100644
+--- a/sfx2/uiconfig/ui/startcenter.ui
++++ b/sfx2/uiconfig/ui/startcenter.ui
+@@ -448,38 +448,7 @@
+                         <property name="relief">none</property>
+                         <property name="use-underline">True</property>
+                         <property name="always-show-image">True</property>
+-                        <child>
+-                          <object class="GtkBox">
+-                            <property name="visible">True</property>
+-                            <property name="can-focus">False</property>
+-                            <property name="spacing">2</property>
+-                            <child>
+-                              <object class="GtkImage" id="donate_image">
+-                                <property name="visible">True</property>
+-                                <property name="can-focus">False</property>
+-                                <property name="icon-name">res/donate.png</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkLabel">
+-                                <property name="visible">True</property>
+-                                <property name="can-focus">False</property>
+-                                <property name="label" comments="Translated via STR_DONATE_BUTTON">Donate</property>
+-                                <property name="use-underline">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="expand">False</property>
+-                                <property name="fill">True</property>
+-                                <property name="position">1</property>
+-                              </packing>
+-                            </child>
+-                          </object>
+-                        </child>
++                        <property name="visible">False</property>
+                       </object>
+                       <packing>
+                         <property name="expand">False</property>
+diff --git a/starmath/uiconfig/smath/menubar/menubar.xml b/starmath/uiconfig/smath/menubar/menubar.xml
+index a1a0157f8..a886daad7 100644
+--- a/starmath/uiconfig/smath/menubar/menubar.xml
++++ b/starmath/uiconfig/smath/menubar/menubar.xml
+@@ -165,8 +165,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/sglobal/menubar/menubar.xml b/sw/uiconfig/sglobal/menubar/menubar.xml
+index bb7519c37..b898bb267 100644
+--- a/sw/uiconfig/sglobal/menubar/menubar.xml
++++ b/sw/uiconfig/sglobal/menubar/menubar.xml
+@@ -801,8 +801,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/sweb/menubar/menubar.xml b/sw/uiconfig/sweb/menubar/menubar.xml
+index 332cb7824..04a9c017b 100644
+--- a/sw/uiconfig/sweb/menubar/menubar.xml
++++ b/sw/uiconfig/sweb/menubar/menubar.xml
+@@ -664,8 +664,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/swform/menubar/menubar.xml b/sw/uiconfig/swform/menubar/menubar.xml
+index eb7c82946..a6cc0673e 100644
+--- a/sw/uiconfig/swform/menubar/menubar.xml
++++ b/sw/uiconfig/swform/menubar/menubar.xml
+@@ -744,8 +744,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/swreport/menubar/menubar.xml b/sw/uiconfig/swreport/menubar/menubar.xml
+index 8cc8aa89d..f4a37e463 100644
+--- a/sw/uiconfig/swreport/menubar/menubar.xml
++++ b/sw/uiconfig/swreport/menubar/menubar.xml
+@@ -697,8 +697,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/swriter/menubar/menubar.xml b/sw/uiconfig/swriter/menubar/menubar.xml
+index d1e9a5c21..03c2364dc 100644
+--- a/sw/uiconfig/swriter/menubar/menubar.xml
++++ b/sw/uiconfig/swriter/menubar/menubar.xml
+@@ -857,8 +857,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>
+diff --git a/sw/uiconfig/swriter/popupmenu/notebookbar.xml b/sw/uiconfig/swriter/popupmenu/notebookbar.xml
+index 386756012..d41981f5b 100644
+--- a/sw/uiconfig/swriter/popupmenu/notebookbar.xml
++++ b/sw/uiconfig/swriter/popupmenu/notebookbar.xml
+@@ -18,7 +18,6 @@
+   <menu:menuitem menu:id=".uno:OptionsTreeDialog"/>
+   <menu:menuseparator/>
+   <menu:menuitem menu:id=".uno:HelpIndex"/>
+-  <menu:menuitem menu:id=".uno:Donation"/>
+   <menu:menuitem menu:id=".uno:About"/>
+   <menu:menuseparator/>
+ </menu:menupopup>
+diff --git a/sw/uiconfig/swxform/menubar/menubar.xml b/sw/uiconfig/swxform/menubar/menubar.xml
+index 1ac5d68b3..ae38b1fa3 100644
+--- a/sw/uiconfig/swxform/menubar/menubar.xml
++++ b/sw/uiconfig/swxform/menubar/menubar.xml
+@@ -790,8 +790,6 @@
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:SafeMode" menu:style="text"/>
+       <menu:menuseparator/>
+-      <menu:menuitem menu:id=".uno:GetInvolved" menu:style="text"/>
+-      <menu:menuitem menu:id=".uno:Donation"/>
+       <menu:menuseparator/>
+       <menu:menuitem menu:id=".uno:ShowLicense" menu:style="text"/>
+       <menu:menuitem menu:id=".uno:About"/>

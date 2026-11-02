@@ -83,7 +83,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0011-fix-installer-empty-sourcepath.patch" \
             "$GITHUB_WORKSPACE/patches/0012-gooffice-default-vietnamese.patch" \
             "$GITHUB_WORKSPACE/patches/0013-gooffice-installer-instdir-fallback.patch" \
-            "$GITHUB_WORKSPACE/patches/0014-gooffice-vnd-currency-symbol.patch"
+            "$GITHUB_WORKSPACE/patches/0014-gooffice-vnd-currency-symbol.patch" \
+            "$GITHUB_WORKSPACE/patches/0015-gooffice-remove-donate-ui.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------

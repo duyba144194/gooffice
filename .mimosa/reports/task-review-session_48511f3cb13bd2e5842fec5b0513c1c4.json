@@ -1,21 +1,15 @@
 {
   "schema_version": "mimosa-task-review/v2",
-  "run_id": "20261102T200713350Z-35376-a8ab2bbd30a7",
-  "run_status": "inconclusive",
-  "errors": [
-    {
-      "stage": "baseline",
-      "target": ".",
-      "reason": "baseline_partial: baseline capture had enumeration or snapshot errors"
-    }
-  ],
+  "run_id": "20261102T202903704Z-33036-572f62ddfdde",
+  "run_status": "completed",
+  "errors": [],
   "coverage": {
     "schema_version": "mimosa-hook-coverage/v1",
-    "status": "partial",
+    "status": "complete",
     "scope": "hook_observed_diff",
     "baseline": {
-      "complete": false,
-      "captured_files": 1,
+      "complete": true,
+      "captured_files": 3,
       "candidate_limit": 5000,
       "truncated": false,
       "enumeration_error_count": 0,
@@ -51,34 +45,16 @@
       "detail_limit": 3,
       "truncated": false
     },
-    "reason_counts": {
-      "baseline_partial": 1,
-      "project_check_failed": 1
-    },
-    "reasons": [
-      {
-        "code": "baseline_partial",
-        "stage": "baseline",
-        "target": ".",
-        "detail": "baseline capture had enumeration or snapshot errors",
-        "affects_completion": true
-      },
-      {
-        "code": "project_check_failed",
-        "stage": "baseline",
-        "target": ".",
-        "detail": "baseline_partial: baseline capture had enumeration or snapshot errors",
-        "affects_completion": true
-      }
-    ],
+    "reason_counts": {},
+    "reasons": [],
     "reasons_truncated": false
   },
-  "generated_at": "2026-11-02T20:07:13.350Z",
+  "generated_at": "2026-11-02T20:29:03.704Z",
   "session_id": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "target": ".",
-  "revision": "d1e8bce2ca9c56e60708835111f55f53e9dabc76",
+  "revision": "7af447bc287835b20227e9c868e46d998aa6b33c",
   "rules_version": "unavailable",
-  "diff_hash": "c48a108e533467ea5e40a149d882994c24a49ff52831b80ab6873b19c975d278",
+  "diff_hash": "5ea9493807a7e69270505fc6fa841502accc8487e3950ba9235a791584a87ae4",
   "diff": {
     "algorithm": "sha256",
     "changed_file_count": 1,
@@ -87,19 +63,23 @@
         "file": ".github/workflows/build.yml",
         "ranges": [
           {
-            "start": 84,
-            "end": 85
+            "start": 85,
+            "end": 86
+          },
+          {
+            "start": 211,
+            "end": 224
           }
         ],
-        "before_hash": "c0be207a6012006e34aa5a974113eb6f76edaca571b294e983025b299d5519c2",
-        "after_hash": "be7c3eadacdeae5924a6f8724b48a7cbd712b192eafe332b75fe729c4a40574c"
+        "before_hash": "be7c3eadacdeae5924a6f8724b48a7cbd712b192eafe332b75fe729c4a40574c",
+        "after_hash": "11dd43eb73ab4743b611cd2bde1fd0d361244f503fecfc0a7c2dfbdd13ecd82e"
       }
     ]
   },
   "timing": {
-    "started_at": "2026-11-02T20:07:12.231Z",
-    "completed_at": "2026-11-02T20:07:13.350Z",
-    "duration_ms": 1119,
+    "started_at": "2026-11-02T20:29:02.591Z",
+    "completed_at": "2026-11-02T20:29:03.704Z",
+    "duration_ms": 1113,
     "measurement": "hook_wall_clock"
   },
   "tokens": {
@@ -113,9 +93,9 @@
     "schemaVersion": "mimosa-gate-telemetry/v1",
     "profile": "gate",
     "operation": "Stop",
-    "outcome": "partial/INCONCLUSIVE",
-    "latencyMs": 1119,
-    "peakMemoryBytes": 89579520,
+    "outcome": "complete",
+    "latencyMs": 1113,
+    "peakMemoryBytes": 89755648,
     "memoryMeasurement": "max-observed-process-rss",
     "scannedFiles": 0,
     "cache": {
@@ -142,8 +122,8 @@
   "finding_events": [],
   "findings": [],
   "artifacts": {
-    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261102T200713350Z-35376-a8ab2bbd30a7.json",
+    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261102T202903704Z-33036-572f62ddfdde.json",
     "latest_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4.json",
-    "history_summary": ".mimosa/history/run-20261102T200713350Z-35376-a8ab2bbd30a7.json"
+    "history_summary": ".mimosa/history/run-20261102T202903704Z-33036-572f62ddfdde.json"
   }
 }
