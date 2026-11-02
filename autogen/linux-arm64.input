@@ -28,4 +28,3 @@
 --with-branding=/home/runner/work/gooffice/gooffice/branding
 --with-macosx-bundle-identifier=org.gooffice.script
 --with-extra-buildid=GoOffice 1.0.0 (LibreOffice 26.8.2)
---with-lang=vi
