@@ -58,6 +58,17 @@ jobs:
           git clone --depth 1 --branch "$LO_TAG" --config core.autocrlf=false https://github.com/LibreOffice/core "$RUNNER_TEMP/core"
           cd "$RUNNER_TEMP/core"
           git config core.autocrlf false
+          # Vietnamese UI support: the build needs the translations repo
+          # (vi .po -> .mo) and dictionaries (spellcheck .dic) as siblings.
+          # Without them the installer packaging step fails with hundreds of
+          # "Source for <file> not found" errors.
+          clone_lo_repo() {
+            local name="$1"
+            git clone --depth 1 --branch "$LO_TAG" "https://github.com/LibreOffice/$name" "$name" \
+              || git clone --depth 1 "https://github.com/LibreOffice/$name" "$name"
+          }
+          clone_lo_repo translations
+          clone_lo_repo dictionaries
           git -c core.autocrlf=false -c user.name=GoOfficeCI -c user.email=ci@gooffice.local apply --ignore-whitespace \
             "$GITHUB_WORKSPACE/patches/0001-wsl-aware-branding-path.patch" \
             "$GITHUB_WORKSPACE/patches/0002-gooffice-product-blocks-in-openoffice-lst.patch" \
@@ -69,7 +80,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0008-gooffice-productname-resource-and-dir.patch" \
             "$GITHUB_WORKSPACE/patches/0009-gooffice-app-icon.patch" \
             "$GITHUB_WORKSPACE/patches/0010-gooffice-linux-macos-icons.patch" \
-            "$GITHUB_WORKSPACE/patches/0011-fix-installer-empty-sourcepath.patch"
+            "$GITHUB_WORKSPACE/patches/0011-fix-installer-empty-sourcepath.patch" \
+            "$GITHUB_WORKSPACE/patches/0012-gooffice-default-vietnamese.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
