@@ -2,17 +2,16 @@ diff --git a/instsetoo_native/util/openoffice.lst.in b/instsetoo_native/util/ope
 index a12aa97d7..26f0c38ac 100644
 --- a/instsetoo_native/util/openoffice.lst.in
 +++ b/instsetoo_native/util/openoffice.lst.in
-@@ -8,7 +8,8 @@ Globals
+@@ -8,7 +8,7 @@ Globals
              UREPACKAGEVERSION @LIBO_VERSION_MAJOR@.@LIBO_VERSION_MINOR@.@LIBO_VERSION_MICRO@.@LIBO_VERSION_PATCH@@LIBO_VERSION_SUFFIX@
              URELAYERVERSION 1
              REFERENCEOOOMAJORMINOR 4.1
 -            WINDOWSBASISROOTNAME LibreOffice
 +            WINDOWSBASISROOTNAME GoOffice
-+            OFFICEDIRECTORYNAME GoOffice
              UNIXBASISROOTNAME libreoffice@LIBO_VERSION_MAJOR@.@LIBO_VERSION_MINOR@
              HIDELICENSEDIALOG 1
              PACKAGEPREFIX
-@@ -192,3 +193,73 @@ LibreOfficeDev_SDK
+@@ -192,3 +192,73 @@ LibreOfficeDev_SDK
          include {installscriptdir},{filelistpath}/PackageSet,{filelistpath}/GeneratedPackage,{filelistpath}/Package,{licensepath},{packinfopath}
      }
  }

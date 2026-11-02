@@ -1,6 +1,6 @@
 {
   "schema_version": "mimosa-task-review/v2",
-  "run_id": "20261102T211211385Z-40612-0dcf4deca2a0",
+  "run_id": "20261102T213139869Z-36496-f3aae62de959",
   "run_status": "inconclusive",
   "errors": [
     {
@@ -19,7 +19,7 @@
       "candidate_limit": 5000,
       "truncated": false,
       "enumeration_error_count": 0,
-      "snapshot_error_count": 2,
+      "snapshot_error_count": 0,
       "compensated_target_count": 1
     },
     "change_tracking": {
@@ -73,12 +73,12 @@
     ],
     "reasons_truncated": false
   },
-  "generated_at": "2026-11-02T21:12:11.385Z",
+  "generated_at": "2026-11-02T21:31:39.869Z",
   "session_id": "session_48511f3cb13bd2e5842fec5b0513c1c4",
   "target": ".",
-  "revision": "86500e9d6188707d5f90dacd7cb0362bc39a400d",
+  "revision": "940486d922257cbd6fe8f627e4de8a42376ee5bd",
   "rules_version": "unavailable",
-  "diff_hash": "2fce10b4304d083ec4b8db6f56cc56d250497a3bf73bf41795bac4ddb9104774",
+  "diff_hash": "90418d6bd2b29c5f5b2c1772d19da3af5c954462e9cb465d15c61fcb09dd3cee",
   "diff": {
     "algorithm": "sha256",
     "changed_file_count": 1,
@@ -87,19 +87,19 @@
         "file": ".github/workflows/build.yml",
         "ranges": [
           {
-            "start": 87,
-            "end": 88
+            "start": 88,
+            "end": 89
           }
         ],
-        "before_hash": "e74e63c4872f78afe5de1bc641714f5abf2e925f3a89cf4c6cfefe7badacdf35",
-        "after_hash": "fb75623841537b7d3c855ca6d02787f2e4efcabf2e858e2e88540c2bdd2e9d12"
+        "before_hash": "fb75623841537b7d3c855ca6d02787f2e4efcabf2e858e2e88540c2bdd2e9d12",
+        "after_hash": "8ae531d13a646107b62d489d1438eba31d3a27a01611e2dab9ee57d253e73ada"
       }
     ]
   },
   "timing": {
-    "started_at": "2026-11-02T21:12:10.288Z",
-    "completed_at": "2026-11-02T21:12:11.385Z",
-    "duration_ms": 1097,
+    "started_at": "2026-11-02T21:31:38.759Z",
+    "completed_at": "2026-11-02T21:31:39.869Z",
+    "duration_ms": 1110,
     "measurement": "hook_wall_clock"
   },
   "tokens": {
@@ -114,8 +114,8 @@
     "profile": "gate",
     "operation": "Stop",
     "outcome": "partial/INCONCLUSIVE",
-    "latencyMs": 1097,
-    "peakMemoryBytes": 89849856,
+    "latencyMs": 1110,
+    "peakMemoryBytes": 89993216,
     "memoryMeasurement": "max-observed-process-rss",
     "scannedFiles": 0,
     "cache": {
@@ -142,8 +142,8 @@
   "finding_events": [],
   "findings": [],
   "artifacts": {
-    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261102T211211385Z-40612-0dcf4deca2a0.json",
+    "immutable_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4-20261102T213139869Z-36496-f3aae62de959.json",
     "latest_report": ".mimosa/reports/task-review-session_48511f3cb13bd2e5842fec5b0513c1c4.json",
-    "history_summary": ".mimosa/history/run-20261102T211211385Z-40612-0dcf4deca2a0.json"
+    "history_summary": ".mimosa/history/run-20261102T213139869Z-36496-f3aae62de959.json"
   }
 }
