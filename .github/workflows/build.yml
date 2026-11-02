@@ -82,7 +82,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0010-gooffice-linux-macos-icons.patch" \
             "$GITHUB_WORKSPACE/patches/0011-fix-installer-empty-sourcepath.patch" \
             "$GITHUB_WORKSPACE/patches/0012-gooffice-default-vietnamese.patch" \
-            "$GITHUB_WORKSPACE/patches/0013-gooffice-installer-instdir-fallback.patch"
+            "$GITHUB_WORKSPACE/patches/0013-gooffice-installer-instdir-fallback.patch" \
+            "$GITHUB_WORKSPACE/patches/0014-gooffice-vnd-currency-symbol.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
@@ -207,7 +208,20 @@ jobs:
           cd "$CORE_DIR"
           if [ "${{ matrix.platform }}" != "win-arm64" ]; then export PATH="/usr/lib/ccache:$PATH"; fi
           make fetch -j"$(nproc)"
-          make -j"$(nproc)"
+          make -j"$(nproc)" || {
+            echo "=== GOOFFICE DIAG ==="
+            echo "--- config_host INSTDIR/WORKDIR/SRCDIR ---"
+            grep -E '^export (INSTDIR|WORKDIR|SRCDIR)=' config_host.mk
+            echo "--- instdir state ---"
+            ls instdir/ 2>&1 | head
+            ls instdir/program/soffice instdir/program/libabplo.so 2>&1
+            ls instdir/program/resource/ 2>&1
+            echo "--- setup_osl.ins libabplo entry ---"
+            grep -B2 -A8 'libabplo' workdir/InstallScriptTarget/setup_osl.ins 2>&1 | head -30
+            echo "--- installer log tail ---"
+            find workdir/installation -name "log_*.log" -exec tail -50 {} \; 2>/dev/null | head -80
+            exit 1
+          }
 
       - name: Build (Windows arm64 cross)
         if: matrix.platform == 'win-arm64'

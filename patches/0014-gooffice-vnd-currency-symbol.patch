@@ -1,0 +1,22 @@
+diff --git a/i18npool/source/localedata/data/vi_VN.xml b/i18npool/source/localedata/data/vi_VN.xml
+index b3b434e81..168daf962 100644
+--- a/i18npool/source/localedata/data/vi_VN.xml
++++ b/i18npool/source/localedata/data/vi_VN.xml
+@@ -51,7 +51,7 @@
+     <TimePM>chiều</TimePM>
+     <MeasurementSystem>metric</MeasurementSystem>
+   </LC_CTYPE>
+-  <LC_FORMAT replaceFrom="[CURRENCY]" replaceTo="[$₫-42A]">
++  <LC_FORMAT replaceFrom="[CURRENCY]" replaceTo="[$VNĐ-42A]">
+     <DateAcceptancePattern>D/M</DateAcceptancePattern>
+     <FormatElement msgid="FixedFormatskey1" default="true" type="medium" usage="FIXED_NUMBER" formatindex="0">
+       <FormatCode>General</FormatCode>
+@@ -348,7 +348,7 @@
+   <LC_CURRENCY>
+     <Currency default="true" usedInCompatibleFormatCodes="true">
+       <CurrencyID>VND</CurrencyID>
+-      <CurrencySymbol>₫</CurrencySymbol>
++      <CurrencySymbol>VNĐ</CurrencySymbol>
+       <BankSymbol>VND</BankSymbol>
+       <CurrencyName>Việt Nam Đồng</CurrencyName>
+       <DecimalPlaces>0</DecimalPlaces>
