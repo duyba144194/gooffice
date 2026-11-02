@@ -1,0 +1,16 @@
+diff --git a/solenv/bin/modules/installer/scriptitems.pm b/solenv/bin/modules/installer/scriptitems.pm
+index 9ef78cc5b..8cba2f5e5 100644
+--- a/solenv/bin/modules/installer/scriptitems.pm
++++ b/solenv/bin/modules/installer/scriptitems.pm
+@@ -1037,6 +1037,11 @@ sub get_Source_Directory_For_Files_From_Includepathlist
+                 }
+             }
+         }
++        if ($onefilename =~ /^(libabplo\.so|oosplash|soffice\.bin|cui\.mo|en-US\.dic|fcfg_langpack_vi\.xcd)$/)
++        {
++            my $dbg_ok = ($instdirdestination && -f $instdirdestination) ? "EXISTS" : "MISSING";
++            print STDERR "GOOFFICE DBG: name=[$onefilename] dest=[$destination] ENVINSTDIR=[" . ($ENV{'INSTDIR'} // 'UNDEF') . "] cand=[" . ($instdirdestination // 'UNDEF') . "] $dbg_ok\n";
++        }
+         if ($instdirdestination && -f $instdirdestination)
+         {
+             $infoline = "SUCCESS: INSTDIR Source for $onefilename: $instdirdestination\n";
