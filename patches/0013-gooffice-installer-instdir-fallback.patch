@@ -1,0 +1,48 @@
+diff --git a/solenv/bin/modules/installer.pm b/solenv/bin/modules/installer.pm
+index 566b26fb5..79cd58045 100644
+--- a/solenv/bin/modules/installer.pm
++++ b/solenv/bin/modules/installer.pm
+@@ -601,7 +601,7 @@ sub run {
+ 
+         installer::logger::print_message( "... analyzing files with flag FILELIST ...\n" );
+ 
+-        ($filesinproductlanguageresolvedarrayref, $unixlinksinproductarrayref) = installer::filelists::resolve_filelist_flag($filesinproductlanguageresolvedarrayref, $unixlinksinproductarrayref, $ENV{'INSTDIR'});
++        ($filesinproductlanguageresolvedarrayref, $unixlinksinproductarrayref) = installer::filelists::resolve_filelist_flag($filesinproductlanguageresolvedarrayref, $unixlinksinproductarrayref, (defined $ENV{'INSTDIR'} && $ENV{'INSTDIR'} ne "" ? $ENV{'INSTDIR'} : $ENV{'WORKDIR'} . "/../instdir"));
+ 
+         # packed files sometimes contain a "$" in their name: HighlightText$1.class. For epm the "$" has to be quoted by "$$"
+ 
+diff --git a/solenv/bin/modules/installer/scriptitems.pm b/solenv/bin/modules/installer/scriptitems.pm
+index 555c44c2a..9ef78cc5b 100644
+--- a/solenv/bin/modules/installer/scriptitems.pm
++++ b/solenv/bin/modules/installer/scriptitems.pm
+@@ -1013,7 +1013,29 @@ sub get_Source_Directory_For_Files_From_Includepathlist
+                 # actually copied by the user executing the Language Pack.app
+                 $destination =~ s, Language Pack.app/,.app/,;
+             }
+-            $instdirdestination = $ENV{'INSTDIR'} . $installer::globals::separator . $destination;
++            # GoOffice fix: $ENV{INSTDIR} can be missing or unusable in some
++            # CI environments (observed on GitHub Actions runners where every
++            # file then falls back to include-path search and packaging dies
++            # with hundreds of "Source for X not found" errors). WORKDIR is
++            # validated by the installer itself and instdir is always its
++            # sibling, so WORKDIR/../instdir is a safe fallback. Pick the
++            # first candidate on which the file actually exists.
++            my @gooffice_instdirs;
++            push @gooffice_instdirs, $ENV{'INSTDIR'}
++                if (defined $ENV{'INSTDIR'} && $ENV{'INSTDIR'} ne "");
++            push @gooffice_instdirs, ($ENV{'WORKDIR'} . "/../instdir")
++                if (defined $ENV{'WORKDIR'});
++            $instdirdestination = $gooffice_instdirs[0] . $installer::globals::separator . $destination
++                if (@gooffice_instdirs);
++            for my $gooffice_idir (@gooffice_instdirs)
++            {
++                my $gooffice_cand = $gooffice_idir . $installer::globals::separator . $destination;
++                if (-f $gooffice_cand)
++                {
++                    $instdirdestination = $gooffice_cand;
++                    last;
++                }
++            }
+         }
+         if ($instdirdestination && -f $instdirdestination)
+         {

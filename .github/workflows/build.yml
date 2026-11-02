@@ -81,7 +81,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0009-gooffice-app-icon.patch" \
             "$GITHUB_WORKSPACE/patches/0010-gooffice-linux-macos-icons.patch" \
             "$GITHUB_WORKSPACE/patches/0011-fix-installer-empty-sourcepath.patch" \
-            "$GITHUB_WORKSPACE/patches/0012-gooffice-default-vietnamese.patch"
+            "$GITHUB_WORKSPACE/patches/0012-gooffice-default-vietnamese.patch" \
+            "$GITHUB_WORKSPACE/patches/0013-gooffice-installer-instdir-fallback.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
