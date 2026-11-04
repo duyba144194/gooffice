@@ -328,10 +328,14 @@ jobs:
         shell: cmd
         run: |
           cd /d "%CORE_DIR%"
-          rem real msys2 /usr/bin FIRST (after our shims): the inherited PATH
-          rem only had relative /usr/bin entries which resolve nowhere from the
-          rem core cwd, so autoconf/autom4te were invisible inside recipes
-          set PATH=%USERPROFILE%\bin;C:\msys64\usr\bin;C:\msys64\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%
+          rem msys64 at the END: round 21 proved prepending it breaks git
+          rem resolution for ./g get-submodules (fetch dies "Cannot find the
+          rem git binary"); appended it still exposes autoconf to recipes
+          rem while Git's git/perl keep winning earlier entries
+          set PATH=%USERPROFILE%\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%;C:\msys64\usr\bin;C:\msys64\bin
+          cmd /c "where git" || (echo GIT-MISSING & exit /b 1)
+          cmd /c "where autoconf"
+          cmd /c "where perl"
           rem icu uses a pregenerated configure (patch 0018 copies it in)
           if not exist generated mkdir generated
           copy /Y "%GITHUB_WORKSPACE%\generated\icu-configure" generated\icu-configure >nul
