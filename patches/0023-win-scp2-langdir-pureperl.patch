@@ -1,0 +1,24 @@
+--- a/scp2/macros/macro.pl
++++ b/scp2/macros/macro.pl
+@@ -148,9 +148,18 @@
+         if (($lang ne "en-US") and ($lang ne "qtz")) {
+             print OUTFILE "; " unless $first;
+             $first = 0;
+-            my $SRC_ROOT = $ENV{"SRC_ROOT"};
+-            my $langdir = `$SRC_ROOT/solenv/bin/localestr $lang`;
+-            chomp $langdir;
++            # GoOffice: instead of shelling out to solenv/bin/localestr,
++            # inline its mapping.  On the Windows CI this recipe runs under a
++            # native perl whose qx() executes via cmd.exe, which cannot run
++            # the #!/bin/sh localestr script; $langdir came out empty and the
++            # MO file names lost their <langdir>/ prefix ("/LC_MESSAGES/x.mo"),
++            # so the installer could not find the built translations.
++            my $langdir;
++            if    ($lang eq "ca-valencia") { $langdir = 'ca@valencia'; }
++            elsif ($lang eq "kmr-Latn")    { $langdir = 'kmr@latin'; }
++            elsif ($lang eq "sr-Latn")     { $langdir = 'sr@latin'; }
++            elsif ($lang eq "hu-Hung")     { $langdir = 'hu@hung'; }
++            else                           { $langdir = $lang; $langdir =~ tr/-/_/; }
+             print OUTFILE
+                 "\\\n\tName ($lang) = STRING(CONCAT3($langdir/LC_MESSAGES/,name,.mo))";
+         }
