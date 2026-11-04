@@ -339,11 +339,18 @@ jobs:
           make fetch -j8 || exit /b 1
           findstr /C:"WSL=" config_host.mk
           make -j8 || (
+            rem actual log lives under UnpackedTarball (EXTERNAL_WORKDIR), not ExternalProject
             echo === ICU BUILD LOG TAIL ===
-            for /f "delims=" %%L in ('dir /s /b workdir\ExternalProject\icu\source\*.log 2^>nul') do (
+            for /f "delims=" %%L in ('dir /s /b workdir\UnpackedTarball\icu\source\*.log 2^>nul') do (
               echo --- %%L ---
               powershell -Command "Get-Content '%%L' -Tail 60"
             )
+            rem let make itself print the fully-expanded icu recipe chain (no execution)
+            echo === ICU RECIPE EXPANSION ===
+            make -f Makefile.gbuild -n "D:/a/_temp/core/workdir/ExternalProject/icu/build" 2>&1 | powershell -Command "$input | Select-Object -Last 25"
+            rem trace autoconf (the silent first link of the chain) inside the unpacked dir
+            echo === AUTOCONF PROBE ===
+            sh.exe -c "cd /d/a/_temp/core/workdir/UnpackedTarball/icu/source; echo PWD=$PWD; which autoconf; autoconf --version 2>&1 | head -1; echo INSTALL=[`cygpath -m /usr/bin/install`]; echo CONFIG_SHELL=[`cygpath -ms /bin/sh`]; ls -l configure configure.ac; autoconf -f -v 2>&1 | tail -40; echo AUTOCONF_RC=$?; head -2 configure"
             exit /b 1
           )
 
