@@ -1,27 +1,26 @@
 name: Build GoOffice
 
-# Builds GoOffice installers for platforms we cannot build locally:
-#   - macOS arm64 (DMG)   — macos-15 runner
-#   - macOS x64  (DMG)    — macos-13 runner (experimental: Xcode 15 vs required 16.2)
-#   - Linux arm64 (deb)   — ubuntu-24.04-arm runner (free arm64 for public repos)
-#   - Windows arm64 (MSI) — windows-2022 runner, cross-compile from x64
-# Windows amd64 and Linux amd64 are built locally (see scripts/).
+# Builds GoOffice installers on free GitHub-hosted runners (public repo):
+#   - macOS arm64 + x64 (DMG) — macos-15 runners (x64 = cross-compile)
+#   - Linux arm64 (deb)      — ubuntu-24.04-arm runner
+#   - Windows x64 + arm64 (MSI) — windows-2022 runner (arm64 cross from x64)
+# The dispatch `platforms` input selects jobs (empty = all).
 #
 # NOTE on duration: a full LibreOffice build on 2–4 vCPU free runners takes
 # 4–8h which can exceed the 6h job limit. Strategy:
-#   1. lean config (no LTO, minimal langs),
+#   1. lean config (no LTO, minimal langs, --disable-odk on Windows CI),
 #   2. ccache cached across attempts (macOS/Linux) — re-run a timed-out job:
 #      the second run reuses compiled objects and finishes.
-#   3. Windows arm64 cross has no ccache (MSVC) — lean config only; if it
-#      times out, split modules via `make <module>` in a follow-up.
+#   3. Windows has no ccache for MSVC — lean config only; a strong local
+#      machine remains the fast path for Windows rebuilds.
 
 on:
   workflow_dispatch:
     inputs:
       platforms:
-        description: 'Comma list: macos-arm64, macos-x64, linux-arm64, win-arm64'
+        description: 'Comma list to build (empty = all): macos-arm64, macos-x64-cross, linux-arm64, win-x64, win-arm64'
         required: false
-        default: 'macos-arm64,linux-arm64'
+        default: ''
   push:
     tags: ['v*']
 
@@ -34,6 +33,9 @@ jobs:
     name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 350
+    # workflow_dispatch: build only the requested platforms (empty input = all);
+    # tag pushes build everything
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.platforms == '' || contains(inputs.platforms, matrix.platform) }}
     strategy:
       fail-fast: false
       matrix:
@@ -44,9 +46,11 @@ jobs:
           # Intel DMG cross-built on an arm64 runner: GitHub's Intel runners
           # (macos-13) are no longer obtainable on the free tier
           - { platform: macos-x64-cross, os: macos-15, input: macos-x64-cross.input }
-        # Windows arm64 is built locally on the maintainer machine (MSVC arm64
-        # cross tools + 20 cores beat a 4-core free runner that cannot finish
-        # within the 350-min job limit and has no ccache for MSVC).
+          # Windows: 4-core runner, no ccache for MSVC — first cold build may
+          # hit the 350-min limit; CI appends --disable-odk to slim the build.
+          # The strong local machine remains the fast path for Windows.
+          - { platform: win-x64,   os: windows-2022, input: win-x64.input }
+          - { platform: win-arm64, os: windows-2022, input: win-arm64.input }
 
     steps:
       - name: Checkout GoOffice repo (branding + configs)
@@ -113,8 +117,8 @@ jobs:
           echo "$(brew --prefix)/opt/make/libexec/gnubin" >> "$GITHUB_PATH"
           brew install --cask temurin@17
 
-      - name: Install deps (Windows arm64 cross)
-        if: matrix.platform == 'win-arm64'
+      - name: Install deps (Windows x64 + arm64 cross)
+        if: startsWith(matrix.platform, 'win-')
         shell: pwsh
         run: |
           $dl = "$env:RUNNER_TEMP\dl"
@@ -154,7 +158,7 @@ jobs:
 
       # ---------- configure & build ----------
       - name: Configure (Linux/macOS)
-        if: matrix.platform != 'win-arm64'
+        if: ${{ !startsWith(matrix.platform, 'win-') }}
         shell: bash
         run: |
           if [ "$(uname -s)" = "Darwin" ]; then
@@ -187,25 +191,40 @@ jobs:
           fi
           ./autogen.sh
 
-      - name: Configure (Windows arm64 cross, Git Bash)
-        if: matrix.platform == 'win-arm64'
+      - name: Configure (Windows x64 + arm64 cross, Git Bash)
+        if: startsWith(matrix.platform, 'win-')
         shell: bash
         run: |
           cd "$CORE_DIR"
+          # portable-tool PATH: msvc make + jom + pkgconf + strawberry perl + ant
+          export PATH="$HOME/bin:$HOME/lo/spp/perl/bin:$HOME/lo/spp/c/bin:$HOME/lo/apache-ant-1.10.17/bin:$PATH"
+          mkdir -p /c/lo-externaltar
           sed -e 's|C:/Users/NAM/GoOffice/lo-externaltar|C:/lo-externaltar|' \
               -e 's|C:/Users/NAM/lo/spp|C:/Users/runneradmin/lo/spp|' \
               -e 's|C:/Users/NAM/lo/apache-ant-1.10.17|C:/Users/runneradmin/lo/apache-ant-1.10.17|' \
               -e 's|C:/Users/NAM/lo/junit-4.10.jar|C:/Users/runneradmin/lo/junit-4.10.jar|' \
               -e 's|C:/Users/NAM/GoOffice/tools/jdk17|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|' \
               -e 's|C:/Users/NAM/Desktop/office/branding|'"$(cygpath -m "$GITHUB_WORKSPACE")"'/branding|' \
+              -e '/--with-doxygen/d' \
               "$GITHUB_WORKSPACE/autogen/${{ matrix.input }}" > autogen.input
-          # runner JDK path discovery
-          JDK17=$(ls -d /c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17*/x64 2>/dev/null | head -1)
-          sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
-          ./autogen.sh
+          # slim CI build: ODK (SDK) is the heaviest optional chunk and its MSI
+          # does not carry branding changes; skip it to stay under 350 min
+          echo "--disable-odk" >> autogen.input
+          # runner JDK path discovery (image-provided Temurin 17)
+          JDK17="${JAVA_HOME_17_X64:-}"
+          if [ ! -d "$JDK17" ]; then
+            JDK17=$(ls -d /c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17*/x64 2>/dev/null | head -1)
+          fi
+          echo "JDK17=$JDK17"
+          if [ -n "$JDK17" ]; then
+            sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
+          fi
+          ./autogen.sh 2>&1 | tee autogen-ci.log
+          # fail hard if packaging prerequisites were rejected
+          grep -E "no package format|MSI" autogen-ci.log | head -5 || true
 
       - name: Build (Linux/macOS)
-        if: matrix.platform != 'win-arm64'
+        if: ${{ !startsWith(matrix.platform, 'win-') }}
         shell: bash
         run: |
           cd "$CORE_DIR"
@@ -226,14 +245,14 @@ jobs:
             exit 1
           }
 
-      - name: Build (Windows arm64 cross)
-        if: matrix.platform == 'win-arm64'
+      - name: Build (Windows x64 + arm64 cross)
+        if: startsWith(matrix.platform, 'win-')
         shell: cmd
         run: |
           cd /d "%CORE_DIR%"
-          set PATH=%USERPROFILE%\bin;%PATH%
-          make fetch -j8
-          make -j8
+          set PATH=%USERPROFILE%\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%
+          make fetch -j8 || exit /b 1
+          make -j8 || exit /b 1
 
       # ---------- artifacts ----------
       - name: Locate installer artifacts
