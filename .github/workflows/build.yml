@@ -151,6 +151,7 @@ jobs:
             'strawberry-perl-5.40.0.1-64bit-portable.zip' = 'https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54001_64bit_UCRT/strawberry-perl-5.40.0.1-64bit-portable.zip'
             'apache-ant-1.10.17-bin.zip'             = 'https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.17-bin.zip'
             'junit-4.10.jar'                         = 'https://repo1.maven.org/maven2/junit/junit/4.10/junit-4.10.jar'
+            'nasm-2.16.03-win64.zip'                 = 'https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/win64/nasm-2.16.03-win64.zip'
           }
           foreach ($k in $files.Keys) {
             Invoke-WebRequest -Uri $files[$k] -OutFile "$dl\$k"
@@ -163,6 +164,9 @@ jobs:
           Expand-Archive "$dl\apache-ant-1.10.17-bin.zip" "$env:USERPROFILE\lo" -Force
           Expand-Archive "$dl\strawberry-perl-5.40.0.1-64bit-portable.zip" "$env:USERPROFILE\lo\spp" -Force
           Copy-Item "$dl\junit-4.10.jar" "$env:USERPROFILE\lo\"
+          # openssl VC-WIN64A requires nasm for asm; standalone exe into PATH
+          Expand-Archive "$dl\nasm-2.16.03-win64.zip" "$env:RUNNER_TEMP\nasm_unpack" -Force
+          Copy-Item "$env:RUNNER_TEMP\nasm_unpack\nasm-2.16.03\nasm.exe" "$env:USERPROFILE\bin\nasm.exe"
           # LO's configure probes the name `pkg-config`
           Copy-Item "$env:USERPROFILE\bin\pkgconf-2.4.3.exe" "$env:USERPROFILE\bin\pkg-config.exe"
 
