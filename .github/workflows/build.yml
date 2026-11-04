@@ -243,6 +243,13 @@ jobs:
           # exactly the local split: autogen=WSL perl, configure-perl and
           # build-perl=strawberry, make=msvc.
           export PATH="$PWD/.ci-fake:$UP/lo/spp/perl/bin:$UP/bin:$UP/lo/apache-ant-1.10.17/bin:$PATH"
+          # patches 0001/0006 convert Windows->POSIX paths via `wslpath -u`
+          # (WSL-only; runners have no WSL -> empty vars break bison paths).
+          # Shim wslpath to msys2's cygpath, which has identical -u
+          # semantics for the MSYS tools (bison/flex) consuming them.
+          MSYS_ROOT=$(cygpath -w /)
+          printf '@echo off\r\n"%s\\usr\\bin\\cygpath.exe" %%*\r\n' "$MSYS_ROOT" > "$UP/bin/wslpath.bat"
+          cat "$UP/bin/wslpath.bat"
           mkdir -p /c/lo-externaltar
           sed -e 's|C:/Users/NAM/GoOffice/lo-externaltar|C:/lo-externaltar|' \
               -e 's|C:/Users/NAM/lo/spp|C:/Users/runneradmin/lo/spp|' \
