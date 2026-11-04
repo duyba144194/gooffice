@@ -274,6 +274,12 @@ jobs:
           chmod +x .ci-fake/autoconf .ci-fake/aclocal
           export GOOFFICE_PREGEN_CONFIGURE="$GW/generated/configure"
           export PATH="$PWD/.ci-fake:$PATH"
+          # msys perl lacks Font::TTF (configure's only missing module) —
+          # vendored from the local strawberry perl into generated/perl-ext;
+          # GITHUB_ENV so the make step inherits it too (build-time perl is
+          # the same msys perl)
+          export PERL5LIB="$GW/generated/perl-ext"
+          echo "PERL5LIB=$GW/generated/perl-ext" >> "$GITHUB_ENV"
           ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
           grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
