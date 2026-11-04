@@ -234,12 +234,15 @@ jobs:
           GW=$(cygpath -m "$GITHUB_WORKSPACE")
           UP=$(cygpath -u "$USERPROFILE")
           cd "$CORE"
-          # PATH order mirrors the local WSL recipe: MSYS /usr/bin FIRST so
-          # autogen.sh runs under the msys perl (it system()s autoconf/aclocal
-          # shebang scripts, which the Windows-native strawberry perl cannot
-          # execute); Windows tools come after — gbuild/WNT overrides unix
-          # tools internally at build time, exactly like the WSL flow
-          export PATH="$PATH:$UP/bin:$UP/lo/apache-ant-1.10.17/bin"
+          # PATH order mirrors the local WSL recipe: strawberry perl FIRST so
+          # configure's perl probe finds it (it ships Font::TTF etc.), then
+          # the msvc make/jom + LO cygwin pkgconf, then MSYS /usr/bin. autogen
+          # itself must run under the msys perl (it system()s the shebang
+          # fake aclocal/autoconf, which the Windows-native strawberry perl
+          # cannot exec) — hence the explicit /usr/bin/perl below. This is
+          # exactly the local split: autogen=WSL perl, configure-perl and
+          # build-perl=strawberry, make=msvc.
+          export PATH="$PWD/.ci-fake:$UP/lo/spp/perl/bin:$UP/bin:$UP/lo/apache-ant-1.10.17/bin:$PATH"
           mkdir -p /c/lo-externaltar
           sed -e 's|C:/Users/NAM/GoOffice/lo-externaltar|C:/lo-externaltar|' \
               -e 's|C:/Users/NAM/lo/spp|C:/Users/runneradmin/lo/spp|' \
@@ -274,19 +277,11 @@ jobs:
           chmod +x .ci-fake/autoconf .ci-fake/aclocal
           export GOOFFICE_PREGEN_CONFIGURE="$GW/generated/configure"
           export PATH="$PWD/.ci-fake:$PATH"
-          # msys perl lacks Font::TTF (configure's only missing module) —
-          # physically install the vendored modules (Font tree + IO/String.pm,
-          # from the local strawberry perl) into msys perl's site_perl;
-          # PERL5LIB alone was ignored by the configure-time check
-          echo "DBG: site_perl layout:"; ls -d /usr/lib/perl5/site_perl/* 2>&1 || true
-          SITE=$(ls -d /usr/lib/perl5/site_perl/5.* 2>/dev/null | head -1)
-          [ -n "$SITE" ] || SITE=/usr/lib/perl5/site_perl/5.40.0
-          echo "DBG: SITE=$SITE"
-          mkdir -p "$SITE/IO" 2>&1 || { echo "DBG: mkdir failed rc=$?"; exit 3; }
-          cp -r "$GW/generated/perl-ext/Font" "$SITE/Font" 2>&1 || { echo "DBG: cp Font failed rc=$?"; exit 4; }
-          cp "$GW/generated/perl-ext/IO/String.pm" "$SITE/IO/String.pm" 2>&1 || { echo "DBG: cp IO failed rc=$?"; exit 5; }
-          /usr/bin/perl -MFont::TTF::Font -MIO::String -e 'print "perl-ext OK\n"' 2>&1 || { echo "DBG: perl check failed rc=$?"; exit 6; }
-          ./autogen.sh 2>&1 | tee autogen-ci.log
+          # msys perl lacks Font::TTF; rather than installing modules into
+          # it, let configure use strawberry perl (from PATH above) — same
+          # as the local build. Sanity-verify before autogen:
+          "$UP/lo/spp/perl/bin/perl.exe" -MFont::TTF::Font -MIO::String -e 'print "strawberry modules OK\n"'
+          /usr/bin/perl ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
           grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
 
