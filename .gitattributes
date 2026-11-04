@@ -4,6 +4,7 @@
 # information". -text disables any EOL conversion for these.
 *.patch -text
 *.input -text
+generated/configure -text
 *.sh text eol=lf
 *.pl -text
 *.bat text eol=crlf

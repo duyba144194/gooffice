@@ -261,6 +261,13 @@ jobs:
           if [ -n "$JDK17" ]; then
             sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
           fi
+          # use the pre-generated configure (expansion of the patched
+          # configure.ac, produced by autoconf 2.71 during the local build):
+          # MSYS2's autoconf 2.72 chokes on LO's configure.ac with
+          # "undefined or overquoted macro" errors. autogen.sh skips
+          # regeneration when configure is newer than configure.ac.
+          cp "$GW/generated/configure" ./configure
+          touch ./configure
           ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
           grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
