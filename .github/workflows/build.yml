@@ -337,7 +337,15 @@ jobs:
           if errorlevel 1 echo STRAWBERRY_PERL=C:/Users/runneradmin/lo/spp/perl/bin/perl.exe>> config_host.mk
           findstr /C:"STRAWBERRY_PERL=C:" config_host.mk
           make fetch -j8 || exit /b 1
-          make -j8 || exit /b 1
+          findstr /C:"WSL=" config_host.mk
+          make -j8 || (
+            echo === ICU BUILD LOG TAIL ===
+            for /f "delims=" %%L in ('dir /s /b workdir\ExternalProject\icu\source\*.log 2^>nul') do (
+              echo --- %%L ---
+              powershell -Command "Get-Content '%%L' -Tail 60"
+            )
+            exit /b 1
+          )
 
       # ---------- artifacts ----------
       - name: Locate installer artifacts
@@ -363,5 +371,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: log-${{ matrix.platform }}
-          path: ${{ env.CORE_DIR }}/workdir/*.log
+          path: ${{ env.CORE_DIR }}/workdir/**/*.log
           if-no-files-found: ignore
