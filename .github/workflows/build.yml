@@ -176,7 +176,7 @@ jobs:
           msystem: MSYS
           update: false
           release: false
-          install: autoconf automake gperf
+          install: autoconf automake gperf bison flex
 
       # ---------- ccache ----------
       - name: ccache cache
