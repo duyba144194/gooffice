@@ -14,17 +14,19 @@ index 645d720b2..62fc7487b 100644
  
 diff --git a/external/nss/nspr-pr-abspath.patch.1 b/external/nss/nspr-pr-abspath.patch.1
 new file mode 100644
-index 000000000..1be6afeddd89f58a455a78ec2d5bdc219ec24c37
+index 000000000..f59f8e13c05f5de93c142d144952b5b470f6f4a5
 --- /dev/null
 +++ b/external/nss/nspr-pr-abspath.patch.1
-@@ -0,0 +1,19 @@
-+GoOffice: on the msys2-based CI host the $(shell cygpath -m ...) calls inside
-+pr_abspath (added by nss.windows.patch, which assumes Git Bash) get mangled -
-+the shell eats backslashes and cl receives "D:a:/_temp/...", dying with C1083
-+on now.c. Resolve relative sources with GNU make's own $(abspath) and force
-+forward slashes with $(subst) instead - no shell, no cygpath, so the recipe
-+survives being run under msys sh. The $(info) line logs CURDIR/SHELL to the
-+build log to pin down any remaining path-form issue (remove once stable).
+@@ -0,0 +1,21 @@
++GoOffice: on the msys2 CI host make runs its recipes through
++C:/msys64/usr/bin/sh.exe (SHELL), and when that shell spawns the NATIVE cl.exe
++the cygwin runtime rewrites any argv containing a colon - "D:/a/.../now.c"
++arrives at cl as "D:a:/_temp/.../now.c" and dies C1083 (nss.windows.patch's
++$(shell cygpath -m ...) produces exactly such native paths). Passing the
++source as a POSIX path instead (/d/a/...) is safe: cygwin's argv conversion
++maps it back to the correct native path. So resolve relative sources with
++GNU make's $(abspath) piped through cygpath -u. The $(info) line logs the
++inputs/outputs to the build log (remove once stable).
 +
 +--- a/nspr/config/rules.mk
 ++++ b/nspr/config/rules.mk
@@ -33,7 +35,7 @@ index 000000000..1be6afeddd89f58a455a78ec2d5bdc219ec24c37
 + ifdef NEED_ABSOLUTE_PATH
 + # The quotes allow absolute paths to contain spaces.
 +-pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(shell cygpath -m $(1))),$(1),$(shell cygpath -m $(CURDIR)/$(1))))"
-++pr_abspath = $(info GoOffice dbg pr_abspath: in=$(1) CURDIR=$(CURDIR) SHELL=$(SHELL) abs=$(abspath $(1))) "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(shell cygpath -m $(1)),$(subst \,/,$(abspath $(1)))))"
+++pr_abspath = $(info GoOffice dbg pr_abspath: in=$(1) abs=$(abspath $(1)) u=$(shell cygpath -u $(abspath $(1)))) "$(if $(findstring :,$(1)),$(shell cygpath -u $(1)),$(if $(filter /%,$(1)),$(1),$(shell cygpath -u $(abspath $(1)))))"
 + endif
 + 
 + $(OBJDIR)/%.$(OBJ_SUFFIX): %.cpp
