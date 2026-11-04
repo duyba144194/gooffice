@@ -277,9 +277,13 @@ jobs:
           chmod +x .ci-fake/autoconf .ci-fake/aclocal
           export GOOFFICE_PREGEN_CONFIGURE="$GW/generated/configure"
           export PATH="$PWD/.ci-fake:$PATH"
-          # msys perl lacks Font::TTF; rather than installing modules into
-          # it, let configure use strawberry perl (from PATH above) — same
-          # as the local build. Sanity-verify before autogen:
+          # vanilla strawberry portable lacks Font::TTF (the local machine's
+          # copy was enriched during development) — install the vendored
+          # modules (generated/perl-ext, 76 .pm) into the runner's
+          # strawberry tree, whose @INC lists site/lib and vendor/lib
+          mkdir -p "$UP/lo/spp/perl/site/lib" "$UP/lo/spp/perl/vendor/lib/IO"
+          cp -r "$GW/generated/perl-ext/Font" "$UP/lo/spp/perl/site/lib/Font"
+          cp "$GW/generated/perl-ext/IO/String.pm" "$UP/lo/spp/perl/vendor/lib/IO/String.pm"
           "$UP/lo/spp/perl/bin/perl.exe" -MFont::TTF::Font -MIO::String -e 'print "strawberry modules OK\n"'
           /usr/bin/perl ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
