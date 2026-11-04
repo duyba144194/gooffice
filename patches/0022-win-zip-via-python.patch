@@ -1,0 +1,100 @@
+--- a/extras/CustomTarget_autocorr.mk
++++ b/extras/CustomTarget_autocorr.mk
+@@ -280,8 +280,7 @@
+ 	$(call gb_Helper_abbreviate_dirs,\
+ 		cd $(dir $<) && \
+ 		$(autocorr_PYTHONCOMMAND) $(SRCDIR)/bin/check-autocorr.py DocumentList.xml && \
+-		$(call gb_Helper_wsl_path,$(WSL) zip -q0X --filesync --must-match $@ mimetype) && \
+-		$(call gb_Helper_wsl_path,$(WSL) zip -qrX --must-match $@ $(call extras_AUTOCORR_XMLFILES_LANG,$(call extras_AUTOCORR_SHORTLANG,$*))) \
++		$(autocorr_PYTHONCOMMAND) $(SRCDIR)/bin/gooffice-pyzip.py $@ mimetype $(call extras_AUTOCORR_XMLFILES_LANG,$(call extras_AUTOCORR_SHORTLANG,$*)) \
+ 	)
+ 	$(call gb_Trace_EndRange,autocorr/acor_$*.dat,ZIP)
+ 
+--- a/extras/CustomTarget_autotextuser.mk
++++ b/extras/CustomTarget_autotextuser.mk
+@@ -41,9 +41,7 @@
+ 	$(call gb_Trace_StartRange,autotext/user/$*.bau,ZIP)
+ 	$(call gb_Helper_abbreviate_dirs,\
+ 	cd $(dir $<) && \
+-	$(call gb_Helper_wsl_path,\
+-		$(WSL) zip -q0X --filesync --must-match $@ mimetype && \
+-		$(WSL) zip -qrX --must-match $@ $(call extras_AUTOTEXTUSER_XMLFILES_RELATIVE,$*)) \
++	$(call gb_ExternalExecutable_get_command,python) $(SRCDIR)/bin/gooffice-pyzip.py $@ mimetype $(call extras_AUTOTEXTUSER_XMLFILES_RELATIVE,$*) \
+ 	)
+ 	$(call gb_Trace_EndRange,autotext/user/$*.bau,ZIP)
+ 
+--- a/extras/CustomTarget_autotextshare.mk
++++ b/extras/CustomTarget_autotextshare.mk
+@@ -3667,9 +3667,7 @@
+ 	$(call gb_Trace_StartRange,autotext/$*.bau,ZIP)
+ 	$(call gb_Helper_abbreviate_dirs,\
+ 		cd $(dir $<) && \
+-		$(call gb_Helper_wsl_path,\
+-		$(WSL) zip -q0X --filesync --must-match $@ mimetype && \
+-		$(WSL) zip -qrX --must-match $@ $(call extras_AUTOTEXTSHARE_XMLFILES_RELATIVE,$*)) \
++		$(call gb_ExternalExecutable_get_command,python) $(SRCDIR)/bin/gooffice-pyzip.py $@ mimetype $(call extras_AUTOTEXTSHARE_XMLFILES_RELATIVE,$*) \
+ 	)
+ 	$(call gb_Trace_EndRange,autotext/$*.bau,ZIP)
+ 
+--- a/extras/CustomTarget_templates.mk
++++ b/extras/CustomTarget_templates.mk
+@@ -15,9 +15,7 @@
+ $(call gb_Output_announce,$(subst $(gb_CustomTarget_workdir)/extras/source/,,$@),$(true),ZIP,2)
+ $(call gb_Trace_StartRange,$(subst $(gb_CustomTarget_workdir)/extras/source/,,$@),ZIP)
+ cd $(dir $<) && \
+-$(call gb_Helper_wsl_path,\
+-$(WSL) zip -q0X --filesync --must-match $@ mimetype && \
+-$(WSL) zip -qrX --must-match $@ $(subst $(dir $<),,$^)) -x mimetype
++$(call gb_ExternalExecutable_get_command,python) $(SRCDIR)/bin/gooffice-pyzip.py $@ mimetype $(filter-out mimetype,$(subst $(dir $<),,$^))
+ $(call gb_Trace_EndRange,$(subst $(gb_CustomTarget_workdir)/extras/source/,,$@),ZIP)
+ endef
+ 
+--- a/bin/gooffice-pyzip.py
++++ b/bin/gooffice-pyzip.py
+@@ -0,0 +1,46 @@
++# -*- tab-width: 4; indent-tabs-mode: nil; py-indent-offset: 4 -*-
++#
++# This Source Code Form is subject to the terms of the Mozilla Public
++# License, v. 2.0. If a copy of the MPL was not distributed with this
++# file, You can obtain one at http://mozilla.org/MPL/2.0/.
++#
++# GoOffice: replacement for the "zip -q0X --filesync --must-match $@ mimetype
++# && zip -qrX --must-match $@ <files>" pairs used by the extras custom
++# targets (autocorr, autotext, templates). On the msys2 CI hosts the POSIX
++# zip mishandles the wsl_path-converted output path and dies with
++# "zip I/O error: No such file or directory"; the recipes already run a
++# working python next to zip, so zip via stdlib zipfile is the parity fix.
++#
++# Usage: gooffice-pyzip.py <output.zip> <stored-entry> <deflated-entry>...
++# Creates the archive from scratch (CI never does incremental zip updates),
++# stored entry first (ODF "mimetype" convention), deflate for the rest,
++# fixed timestamps for reproducible output.
++#
++# vim: set noet sw=4 ts=4:
++
++import sys
++import zipfile
++
++
++def _add(zf, name, compress_type):
++    info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
++    info.compress_type = compress_type
++    info.external_attr = 0o644 << 16
++    with open(name, "rb") as f:
++        zf.writestr(info, f.read())
++
++
++def main(argv):
++    if len(argv) < 3:
++        sys.stderr.write(
++            "usage: gooffice-pyzip.py output.zip stored-entry [deflated-entry ...]\n")
++        return 2
++    with zipfile.ZipFile(argv[1], "w") as zf:
++        _add(zf, argv[2], zipfile.ZIP_STORED)
++        for name in argv[3:]:
++            _add(zf, name, zipfile.ZIP_DEFLATED)
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main(sys.argv))
