@@ -181,7 +181,7 @@ jobs:
           msystem: MSYS
           update: false
           release: false
-          install: autoconf automake gperf bison flex patch zip unzip nasm
+          install: autoconf automake gperf bison flex patch zip unzip nasm binutils
 
       # ---------- ccache ----------
       - name: ccache cache
