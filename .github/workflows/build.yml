@@ -29,28 +29,48 @@ env:
   GOOFFICE_VERSION: '1.0.0'
 
 jobs:
+  # Resolves the dispatch `platforms` input into the actual build matrix
+  # (job-level if cannot reference the matrix context, so we compute it here)
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - name: Select platforms
+        id: set
+        env:
+          PLAT_INPUT: ${{ inputs.platforms }}
+        run: |
+          ALL='[
+            {"platform":"macos-arm64","os":"macos-15","input":"macos-arm64.input"},
+            {"platform":"macos-x64","os":"macos-13","input":"macos-x64.input"},
+            {"platform":"linux-arm64","os":"ubuntu-24.04-arm","input":"linux-arm64.input"},
+            {"platform":"macos-x64-cross","os":"macos-15","input":"macos-x64-cross.input"},
+            {"platform":"win-x64","os":"windows-2022","input":"win-x64.input"},
+            {"platform":"win-arm64","os":"windows-2022","input":"win-arm64.input"}
+          ]'
+          if [ -z "$PLAT_INPUT" ]; then
+            M="$ALL"
+          else
+            M=$(echo "$ALL" | jq -c --arg p "$PLAT_INPUT" \
+              '[.[] | select(.platform as $x | ($p | split(",") | index($x)))]')
+          fi
+          if [ "$M" = "[]" ]; then
+            echo "No known platform in '$PLAT_INPUT'. Known: macos-arm64, macos-x64, macos-x64-cross, linux-arm64, win-x64, win-arm64" >&2
+            exit 1
+          fi
+          echo "Selected: $M" >&2
+          echo "matrix=$M" >> "$GITHUB_OUTPUT"
+
   build:
     name: ${{ matrix.platform }}
+    needs: select
     runs-on: ${{ matrix.os }}
     timeout-minutes: 350
-    # workflow_dispatch: build only the requested platforms (empty input = all);
-    # tag pushes build everything
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.platforms == '' || contains(inputs.platforms, matrix.platform) }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { platform: macos-arm64, os: macos-15,   input: macos-arm64.input }
-          - { platform: macos-x64,   os: macos-13,   input: macos-x64.input }
-          - { platform: linux-arm64, os: ubuntu-24.04-arm, input: linux-arm64.input }
-          # Intel DMG cross-built on an arm64 runner: GitHub's Intel runners
-          # (macos-13) are no longer obtainable on the free tier
-          - { platform: macos-x64-cross, os: macos-15, input: macos-x64-cross.input }
-          # Windows: 4-core runner, no ccache for MSVC — first cold build may
-          # hit the 350-min limit; CI appends --disable-odk to slim the build.
-          # The strong local machine remains the fast path for Windows.
-          - { platform: win-x64,   os: windows-2022, input: win-x64.input }
-          - { platform: win-arm64, os: windows-2022, input: win-arm64.input }
+        include: ${{ fromJSON(needs.select.outputs.matrix) }}
 
     steps:
       - name: Checkout GoOffice repo (branding + configs)
