@@ -261,13 +261,19 @@ jobs:
           if [ -n "$JDK17" ]; then
             sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
           fi
-          # use the pre-generated configure (expansion of the patched
-          # configure.ac, produced by autoconf 2.71 during the local build):
-          # MSYS2's autoconf 2.72 chokes on LO's configure.ac with
-          # "undefined or overquoted macro" errors. autogen.sh skips
-          # regeneration when configure is newer than configure.ac.
-          cp "$GW/generated/configure" ./configure
-          touch ./configure
+          # autogen.sh unconditionally runs aclocal + unlink configure +
+          # autoconf (no timestamp check), but honors $ACLOCAL/$AUTOCONF.
+          # MSYS2's autoconf 2.72 chokes on LO 26.8's configure.ac
+          # ("undefined or overquoted macro"); so shim them: a no-op
+          # aclocal and an "autoconf" that copies in the pre-generated
+          # configure (expansion of the patched configure.ac by autoconf
+          # 2.71, produced during the successful local Windows build).
+          mkdir -p .ci-fake
+          printf '#!/bin/sh\ncp "$GOOFFICE_PREGEN_CONFIGURE" ./configure\n' > .ci-fake/autoconf
+          printf '#!/bin/sh\nexit 0\n' > .ci-fake/aclocal
+          chmod +x .ci-fake/autoconf .ci-fake/aclocal
+          export GOOFFICE_PREGEN_CONFIGURE="$GW/generated/configure"
+          export PATH="$PWD/.ci-fake:$PATH"
           ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
           grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
