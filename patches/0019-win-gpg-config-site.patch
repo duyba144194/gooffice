@@ -1,0 +1,63 @@
+diff --git a/external/gpgmepp/ExternalProject_gpgmepp.mk b/external/gpgmepp/ExternalProject_gpgmepp.mk
+index d2733bf21..af16357b9 100644
+--- a/external/gpgmepp/ExternalProject_gpgmepp.mk
++++ b/external/gpgmepp/ExternalProject_gpgmepp.mk
+@@ -21,12 +21,15 @@ $(eval $(call gb_ExternalProject_use_externals,gpgmepp,\
+ ))
+ 
+ ifeq ($(COM),MSC)
++# GoOffice: CONFIG_SITE=/dev/null below - skip msys2's /usr/local/etc/config.site
++# which blanks the default prefix on msys2 CI hosts (parity with Git Bash local
++# builds that have no such file). See ExternalProject_libgpg-error.mk.
+ $(call gb_ExternalProject_get_state_target,gpgmepp,build): $(call gb_Executable_get_target_for_build,cpp)
+ 	$(call gb_Trace_StartRange,gpgmepp,EXTERNAL)
+ 	$(call gb_ExternalProject_run,build, \
+ 		$(gb_WIN_GPG_cross_setup_exports) \
+ 		&& $(WSL) autoreconf \
+-		&& $(gb_RUN_CONFIGURE) ./configure \
++		&& CONFIG_SITE=/dev/null $(gb_RUN_CONFIGURE) ./configure \
+ 		   $(gb_CONFIGURE_PLATFORMS) \
+ 		   --disable-shared \
+ 		   --disable-languages \
+diff --git a/external/libassuan/ExternalProject_libassuan.mk b/external/libassuan/ExternalProject_libassuan.mk
+index 364deeb71..6b386a2a0 100644
+--- a/external/libassuan/ExternalProject_libassuan.mk
++++ b/external/libassuan/ExternalProject_libassuan.mk
+@@ -21,12 +21,14 @@ $(eval $(call gb_ExternalProject_use_externals,libassuan,\
+ 
+ 
+ ifeq ($(COM),MSC)
++# GoOffice: CONFIG_SITE=/dev/null below - skip msys2's /usr/local/etc/config.site
++# (blank default prefix on msys2 CI hosts). See ExternalProject_libgpg-error.mk.
+ $(call gb_ExternalProject_get_state_target,libassuan,build): $(call gb_Executable_get_target_for_build,cpp)
+ 	$(call gb_Trace_StartRange,libassuan,EXTERNAL)
+ 	$(call gb_ExternalProject_run,build,\
+ 	  $(gb_WIN_GPG_cross_setup_exports) \
+ 	  && $(WSL) autoreconf \
+-	  && $(gb_RUN_CONFIGURE) ./configure \
++	  && CONFIG_SITE=/dev/null $(gb_RUN_CONFIGURE) ./configure \
+ 		--enable-static \
+ 		--disable-shared \
+ 		--disable-doc \
+diff --git a/external/libgpg-error/ExternalProject_libgpg-error.mk b/external/libgpg-error/ExternalProject_libgpg-error.mk
+index 88b9b2be5..f8ee9ff2a 100644
+--- a/external/libgpg-error/ExternalProject_libgpg-error.mk
++++ b/external/libgpg-error/ExternalProject_libgpg-error.mk
+@@ -16,11 +16,16 @@ $(eval $(call gb_ExternalProject_register_targets,libgpg-error,\
+ $(eval $(call gb_ExternalProject_use_autoconf,libgpg-error,build))
+ 
+ ifeq ($(COM),MSC)
++# GoOffice: CONFIG_SITE=/dev/null above - msys2's /usr/local/etc/config.site
++# blanks the default prefix, so the generated gpg-error-config prints -L/lib
++# while gpgrt-config omits -L for system dirs and the
++# "Confirm gpg-error-config works" self-test fails. Git Bash (local builds)
++# has no such file and passes with prefix=/usr/local -> skip it for parity.
+ $(call gb_ExternalProject_get_state_target,libgpg-error,build): $(call gb_Executable_get_target_for_build,cpp)
+ 	$(call gb_Trace_StartRange,libgpg-error,EXTERNAL)
+ 	$(call gb_ExternalProject_run,build,\
+ 		$(gb_WIN_GPG_cross_setup_exports) \
+-		&& MAKE=$(MAKE) $(gb_RUN_CONFIGURE) ./configure \
++		&& MAKE=$(MAKE) CONFIG_SITE=/dev/null $(gb_RUN_CONFIGURE) ./configure \
+ 			--enable-static \
+ 			--disable-shared \
+ 			--disable-rpath \

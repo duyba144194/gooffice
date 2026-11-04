@@ -111,7 +111,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0015-gooffice-remove-donate-ui.patch" \
             "$GITHUB_WORKSPACE/patches/0016-gooffice-call-installer-instdir.patch" \
             "$GITHUB_WORKSPACE/patches/0017-gooffice-installer-debug.patch" \
-            "$GITHUB_WORKSPACE/patches/0018-gooffice-icu-pregen-configure.patch"
+            "$GITHUB_WORKSPACE/patches/0018-gooffice-icu-pregen-configure.patch" \
+            "$GITHUB_WORKSPACE/patches/0019-win-gpg-config-site.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
