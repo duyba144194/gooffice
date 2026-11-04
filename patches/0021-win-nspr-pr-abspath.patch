@@ -1,0 +1,37 @@
+diff --git a/external/nss/UnpackedTarball_nss.mk b/external/nss/UnpackedTarball_nss.mk
+index 645d720b2..62fc7487b 100644
+--- a/external/nss/UnpackedTarball_nss.mk
++++ b/external/nss/UnpackedTarball_nss.mk
+@@ -40,7 +40,8 @@ $(eval $(call gb_UnpackedTarball_add_patches,nss,\
+     $(if $(filter WNT,$(OS)), \
+         external/nss/nss.windows.patch \
+         external/nss/nss.nowerror.patch \
+-        external/nss/nss.utf8bom.patch.1) \
++        external/nss/nss.utf8bom.patch.1 \
++        external/nss/nspr-pr-abspath.patch.1) \
+     external/nss/outofbounds.patch.0 \
+ ))
+ 
+diff --git a/external/nss/nspr-pr-abspath.patch.1 b/external/nss/nspr-pr-abspath.patch.1
+new file mode 100644
+index 000000000..7bfb8d653
+--- /dev/null
++++ b/external/nss/nspr-pr-abspath.patch.1
+@@ -0,0 +1,17 @@
++GoOffice: on the msys2-based CI host the $(shell cygpath -m ...) calls inside
++pr_abspath (added by nss.windows.patch, which assumes Git Bash) get mangled by
++the msys shell eating backslashes, so cl receives "D:a:/_temp/..." and dies
++with C1083 on now.c. Resolve relative sources with GNU make's own $(abspath)
++instead - no shell, no cygpath.
++
++--- a/nspr/config/rules.mk
+++++ b/nspr/config/rules.mk
++@@ -406,7 +406,7 @@
++
++ ifdef NEED_ABSOLUTE_PATH
++ # The quotes allow absolute paths to contain spaces.
++-pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(shell cygpath -m $(1))),$(1),$(shell cygpath -m $(CURDIR)/$(1))))"
+++pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(shell cygpath -m $(1)),$(abspath $(1))))"
++ endif
++ 
++ $(OBJDIR)/%.$(OBJ_SUFFIX): %.cpp

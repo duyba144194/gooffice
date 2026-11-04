@@ -112,7 +112,9 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0016-gooffice-call-installer-instdir.patch" \
             "$GITHUB_WORKSPACE/patches/0017-gooffice-installer-debug.patch" \
             "$GITHUB_WORKSPACE/patches/0018-gooffice-icu-pregen-configure.patch" \
-            "$GITHUB_WORKSPACE/patches/0019-win-gpg-config-site.patch"
+            "$GITHUB_WORKSPACE/patches/0019-win-gpg-config-site.patch" \
+            "$GITHUB_WORKSPACE/patches/0020-win-gpg-autotools-pregen.patch" \
+            "$GITHUB_WORKSPACE/patches/0021-win-nspr-pr-abspath.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
@@ -337,10 +339,14 @@ jobs:
           cmd /c "where git" || (echo GIT-MISSING & exit /b 1)
           cmd /c "where autoconf"
           cmd /c "where perl"
-          rem icu uses a pregenerated configure (patch 0018 copies it in)
+          rem icu uses a pregenerated configure (patch 0018 copies it in);
+          rem libassuan/gpgmepp pregen autotools tars (patch 0020) too
           if not exist generated mkdir generated
           copy /Y "%GITHUB_WORKSPACE%\generated\icu-configure" generated\icu-configure >nul
           dir generated\icu-configure
+          copy /Y "%GITHUB_WORKSPACE%\generated\libassuan-autotools.tar" generated\libassuan-autotools.tar >nul
+          copy /Y "%GITHUB_WORKSPACE%\generated\gpgmepp-autotools.tar" generated\gpgmepp-autotools.tar >nul
+          dir generated\*.tar
           rem openssl recipe (MSYSTEM branch) uses $(STRAWBERRY_PERL); CI
           rem configure records it EMPTY, which degenerates the openssl
           rem command to a bare "Configure: command not found". Match only
