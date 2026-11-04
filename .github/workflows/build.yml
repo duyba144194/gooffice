@@ -163,6 +163,20 @@ jobs:
           Expand-Archive "$dl\apache-ant-1.10.17-bin.zip" "$env:USERPROFILE\lo" -Force
           Expand-Archive "$dl\strawberry-perl-5.40.0.1-64bit-portable.zip" "$env:USERPROFILE\lo\spp" -Force
           Copy-Item "$dl\junit-4.10.jar" "$env:USERPROFILE\lo\"
+          # LO's configure probes the name `pkg-config`
+          Copy-Item "$env:USERPROFILE\bin\pkgconf-2.4.3.exe" "$env:USERPROFILE\bin\pkg-config.exe"
+
+      # autogen.sh needs autoconf/aclocal which neither Git Bash nor the
+      # runner image provide (locally we ran autogen under WSL; runners have
+      # no WSL, so use MSYS2 — the Cygwin-lineage environment LO documents)
+      - name: Setup MSYS2 (autoconf for configure)
+        if: startsWith(matrix.platform, 'win-')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+          update: false
+          release: false
+          install: autoconf automake
 
       # ---------- ccache ----------
       - name: ccache cache
@@ -211,22 +225,28 @@ jobs:
           fi
           ./autogen.sh
 
-      - name: Configure (Windows x64 + arm64 cross, Git Bash)
+      - name: Configure (Windows x64 + arm64 cross, MSYS2)
         if: startsWith(matrix.platform, 'win-')
-        shell: bash
+        shell: msys2 {0}
         run: |
-          cd "$CORE_DIR"
-          # portable-tool PATH: msvc make + jom + pkgconf + strawberry perl + ant
-          export PATH="$HOME/bin:$HOME/lo/spp/perl/bin:$HOME/lo/spp/c/bin:$HOME/lo/apache-ant-1.10.17/bin:$PATH"
+          set -e
+          CORE=$(cygpath -u "$CORE_DIR")
+          GW=$(cygpath -m "$GITHUB_WORKSPACE")
+          UP=$(cygpath -u "$USERPROFILE")
+          cd "$CORE"
+          # PATH order matters: Windows-native tools first (strawberry perl,
+          # msvc make/jom, LO's cygwin pkgconf, ant) so configure records
+          # usable programs; MSYS /usr/bin (autoconf/aclocal) comes last
+          export PATH="$UP/lo/spp/perl/bin:$UP/bin:$UP/lo/apache-ant-1.10.17/bin:$PATH:/usr/bin"
           mkdir -p /c/lo-externaltar
           sed -e 's|C:/Users/NAM/GoOffice/lo-externaltar|C:/lo-externaltar|' \
               -e 's|C:/Users/NAM/lo/spp|C:/Users/runneradmin/lo/spp|' \
               -e 's|C:/Users/NAM/lo/apache-ant-1.10.17|C:/Users/runneradmin/lo/apache-ant-1.10.17|' \
               -e 's|C:/Users/NAM/lo/junit-4.10.jar|C:/Users/runneradmin/lo/junit-4.10.jar|' \
               -e 's|C:/Users/NAM/GoOffice/tools/jdk17|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|' \
-              -e 's|C:/Users/NAM/Desktop/office/branding|'"$(cygpath -m "$GITHUB_WORKSPACE")"'/branding|' \
+              -e "s|C:/Users/NAM/Desktop/office/branding|$GW/branding|" \
               -e '/--with-doxygen/d' \
-              "$GITHUB_WORKSPACE/autogen/${{ matrix.input }}" > autogen.input
+              "$GW/autogen/${{ matrix.input }}" > autogen.input
           # slim CI build: ODK (SDK) is the heaviest optional chunk and its MSI
           # does not carry branding changes; skip it to stay under 350 min
           echo "--disable-odk" >> autogen.input
@@ -240,8 +260,8 @@ jobs:
             sed -i "s|C:/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/17|$(cygpath -m "$JDK17")|" autogen.input
           fi
           ./autogen.sh 2>&1 | tee autogen-ci.log
-          # fail hard if packaging prerequisites were rejected
-          grep -E "no package format|MSI" autogen-ci.log | head -5 || true
+          # surface packaging decisions for quick diagnosis
+          grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
 
       - name: Build (Linux/macOS)
         if: ${{ !startsWith(matrix.platform, 'win-') }}
