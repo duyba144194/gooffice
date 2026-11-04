@@ -324,12 +324,14 @@ jobs:
         run: |
           cd /d "%CORE_DIR%"
           set PATH=%USERPROFILE%\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%
-          rem openssl recipe (MSYSTEM branch) uses $(STRAWBERRY_PERL); if
-          rem configure did not record it, the command degenerates to a bare
-          rem "Configure: command not found" under /usr/bin/sh
-          findstr /C:"STRAWBERRY_PERL=" config_host.mk
+          rem openssl recipe (MSYSTEM branch) uses $(STRAWBERRY_PERL); CI
+          rem configure records it EMPTY, which degenerates the openssl
+          rem command to a bare "Configure: command not found". Match only
+          rem a non-empty value; appending later overrides the empty line
+          rem (last definition wins in GNU make).
+          findstr /C:"STRAWBERRY_PERL=C:" config_host.mk
           if errorlevel 1 echo STRAWBERRY_PERL=C:/Users/runneradmin/lo/spp/perl/bin/perl.exe>> config_host.mk
-          findstr /C:"STRAWBERRY_PERL=" config_host.mk
+          findstr /C:"STRAWBERRY_PERL=C:" config_host.mk
           make fetch -j8 || exit /b 1
           make -j8 || exit /b 1
 
