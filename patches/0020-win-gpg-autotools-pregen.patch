@@ -1,6 +1,6 @@
 --- a/external/libassuan/ExternalProject_libassuan.mk
 +++ b/external/libassuan/ExternalProject_libassuan.mk
-@@ -23,11 +23,15 @@
+@@ -23,11 +23,17 @@
  ifeq ($(COM),MSC)
  # GoOffice: CONFIG_SITE=/dev/null below - skip msys2's /usr/local/etc/config.site
  # (blank default prefix on msys2 CI hosts). See ExternalProject_libgpg-error.mk.
@@ -8,18 +8,20 @@
 +# set (configure, Makefile.in, m4/, build-aux/) committed under generated/; it was
 +# produced locally with Ubuntu autoconf 2.71 over this same patched tree. msys2's
 +# autom4te dies on CI with "cp: cannot stat ''" (same class as ICU, patch 0018).
++# --force-local: msys2 GNU tar otherwise reads the drive letter in $(SRCDIR)
++# (D:/...) as a remote-host prefix and dies with "Cannot connect to D:".
  $(call gb_ExternalProject_get_state_target,libassuan,build): $(call gb_Executable_get_target_for_build,cpp)
  	$(call gb_Trace_StartRange,libassuan,EXTERNAL)
  	$(call gb_ExternalProject_run,build,\
  	  $(gb_WIN_GPG_cross_setup_exports) \
 -	  && $(WSL) autoreconf \
-+	  && tar -xf $(SRCDIR)/generated/libassuan-autotools.tar \
++	  && tar --force-local -xf $(SRCDIR)/generated/libassuan-autotools.tar \
  	  && CONFIG_SITE=/dev/null $(gb_RUN_CONFIGURE) ./configure \
  		--enable-static \
  		--disable-shared \
 --- a/external/gpgmepp/ExternalProject_gpgmepp.mk
 +++ b/external/gpgmepp/ExternalProject_gpgmepp.mk
-@@ -24,11 +24,15 @@
+@@ -24,11 +24,17 @@
  # GoOffice: CONFIG_SITE=/dev/null below - skip msys2's /usr/local/etc/config.site
  # which blanks the default prefix on msys2 CI hosts (parity with Git Bash local
  # builds that have no such file). See ExternalProject_libgpg-error.mk.
@@ -27,12 +29,14 @@
 +# set (configure, Makefile.in, m4/, build-aux/) committed under generated/; it was
 +# produced locally with Ubuntu autoconf 2.71 over this same patched tree. msys2's
 +# autom4te dies on CI with "cp: cannot stat ''" (same class as ICU, patch 0018).
++# --force-local: msys2 GNU tar otherwise reads the drive letter in $(SRCDIR)
++# (D:/...) as a remote-host prefix and dies with "Cannot connect to D:".
  $(call gb_ExternalProject_get_state_target,gpgmepp,build): $(call gb_Executable_get_target_for_build,cpp)
  	$(call gb_Trace_StartRange,gpgmepp,EXTERNAL)
  	$(call gb_ExternalProject_run,build, \
  		$(gb_WIN_GPG_cross_setup_exports) \
 -		&& $(WSL) autoreconf \
-+		&& tar -xf $(SRCDIR)/generated/gpgmepp-autotools.tar \
++		&& tar --force-local -xf $(SRCDIR)/generated/gpgmepp-autotools.tar \
  		&& CONFIG_SITE=/dev/null $(gb_RUN_CONFIGURE) ./configure \
  		   $(gb_CONFIGURE_PLATFORMS) \
  		   --disable-shared \

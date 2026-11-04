@@ -14,15 +14,17 @@ index 645d720b2..62fc7487b 100644
  
 diff --git a/external/nss/nspr-pr-abspath.patch.1 b/external/nss/nspr-pr-abspath.patch.1
 new file mode 100644
-index 000000000..7bfb8d653
+index 000000000..1be6afeddd89f58a455a78ec2d5bdc219ec24c37
 --- /dev/null
 +++ b/external/nss/nspr-pr-abspath.patch.1
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,19 @@
 +GoOffice: on the msys2-based CI host the $(shell cygpath -m ...) calls inside
-+pr_abspath (added by nss.windows.patch, which assumes Git Bash) get mangled by
-+the msys shell eating backslashes, so cl receives "D:a:/_temp/..." and dies
-+with C1083 on now.c. Resolve relative sources with GNU make's own $(abspath)
-+instead - no shell, no cygpath.
++pr_abspath (added by nss.windows.patch, which assumes Git Bash) get mangled -
++the shell eats backslashes and cl receives "D:a:/_temp/...", dying with C1083
++on now.c. Resolve relative sources with GNU make's own $(abspath) and force
++forward slashes with $(subst) instead - no shell, no cygpath, so the recipe
++survives being run under msys sh. The $(info) line logs CURDIR/SHELL to the
++build log to pin down any remaining path-form issue (remove once stable).
 +
 +--- a/nspr/config/rules.mk
 ++++ b/nspr/config/rules.mk
@@ -31,7 +33,7 @@ index 000000000..7bfb8d653
 + ifdef NEED_ABSOLUTE_PATH
 + # The quotes allow absolute paths to contain spaces.
 +-pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(shell cygpath -m $(1))),$(1),$(shell cygpath -m $(CURDIR)/$(1))))"
-++pr_abspath = "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(shell cygpath -m $(1)),$(abspath $(1))))"
+++pr_abspath = $(info GoOffice dbg pr_abspath: in=$(1) CURDIR=$(CURDIR) SHELL=$(SHELL) abs=$(abspath $(1))) "$(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(shell cygpath -m $(1)),$(subst \,/,$(abspath $(1)))))"
 + endif
 + 
 + $(OBJDIR)/%.$(OBJ_SUFFIX): %.cpp
