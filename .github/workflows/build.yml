@@ -181,7 +181,7 @@ jobs:
           msystem: MSYS
           update: false
           release: false
-          install: autoconf automake gperf bison flex patch zip unzip
+          install: autoconf automake gperf bison flex patch zip unzip nasm
 
       # ---------- ccache ----------
       - name: ccache cache
@@ -348,6 +348,13 @@ jobs:
           findstr /C:"STRAWBERRY_PERL=C:" config_host.mk
           if errorlevel 1 echo STRAWBERRY_PERL=C:/Users/runneradmin/lo/spp/perl/bin/perl.exe>> config_host.mk
           findstr /C:"STRAWBERRY_PERL=C:" config_host.mk
+          rem libjpeg-turbo asm goes through gb_Helper_wsl_path (active while
+          rem MSYSTEM is set) -> nasm gets cygwin-style /d/a/... paths which
+          rem the native nasm.us exe cannot open; msys2's nasm handles both
+          rem forms. Native nasm.exe in %USERPROFILE%\bin stays for openssl.
+          findstr /C:"NASM=" config_host.mk
+          echo NASM=C:/msys64/usr/bin/nasm.exe>> config_host.mk
+          findstr /C:"NASM=" config_host.mk
           make fetch -j8 || exit /b 1
           findstr /C:"WSL=" config_host.mk
           make -j8 || (
