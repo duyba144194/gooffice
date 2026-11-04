@@ -1,0 +1,10 @@
+# Patch files must be checked out byte-for-byte. On Windows runners the
+# default autocrlf LF->CRLF translation corrupts git-apply headers and
+# binary patches (0009/0010 icons) -> "git diff header lacks filename
+# information". -text disables any EOL conversion for these.
+*.patch -text
+*.input -text
+*.sh text eol=lf
+*.pl -text
+*.bat text eol=crlf
+*.ps1 text eol=crlf
