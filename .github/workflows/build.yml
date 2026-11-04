@@ -110,7 +110,8 @@ jobs:
             "$GITHUB_WORKSPACE/patches/0014-gooffice-vnd-currency-symbol.patch" \
             "$GITHUB_WORKSPACE/patches/0015-gooffice-remove-donate-ui.patch" \
             "$GITHUB_WORKSPACE/patches/0016-gooffice-call-installer-instdir.patch" \
-            "$GITHUB_WORKSPACE/patches/0017-gooffice-installer-debug.patch"
+            "$GITHUB_WORKSPACE/patches/0017-gooffice-installer-debug.patch" \
+            "$GITHUB_WORKSPACE/patches/0018-gooffice-icu-pregen-configure.patch"
           echo "CORE_DIR=$RUNNER_TEMP/core" >> "$GITHUB_ENV"
 
       # ---------- platform deps ----------
@@ -327,7 +328,14 @@ jobs:
         shell: cmd
         run: |
           cd /d "%CORE_DIR%"
-          set PATH=%USERPROFILE%\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%
+          rem real msys2 /usr/bin FIRST (after our shims): the inherited PATH
+          rem only had relative /usr/bin entries which resolve nowhere from the
+          rem core cwd, so autoconf/autom4te were invisible inside recipes
+          set PATH=%USERPROFILE%\bin;C:\msys64\usr\bin;C:\msys64\bin;%USERPROFILE%\lo\spp\perl\bin;%USERPROFILE%\lo\apache-ant-1.10.17\bin;%PATH%
+          rem icu uses a pregenerated configure (patch 0018 copies it in)
+          if not exist generated mkdir generated
+          copy /Y "%GITHUB_WORKSPACE%\generated\icu-configure" generated\icu-configure >nul
+          dir generated\icu-configure
           rem openssl recipe (MSYSTEM branch) uses $(STRAWBERRY_PERL); CI
           rem configure records it EMPTY, which degenerates the openssl
           rem command to a bare "Configure: command not found". Match only
@@ -345,12 +353,19 @@ jobs:
               echo --- %%L ---
               powershell -Command "Get-Content '%%L' -Tail 60"
             )
-            rem let make itself print the fully-expanded icu recipe chain (no execution)
+            echo === ICU PREGEN STATE ===
+            dir generated\icu-configure
+            sh.exe -c "ls -l /d/a/_temp/core/workdir/UnpackedTarball/icu/source/configure*; head -2 /d/a/_temp/core/workdir/UnpackedTarball/icu/source/configure"
+            rem prove what make now expands for the icu chain (filter noise out)
             echo === ICU RECIPE EXPANSION ===
-            make -f Makefile.gbuild -n "D:/a/_temp/core/workdir/ExternalProject/icu/build" 2>&1 | powershell -Command "$input | Select-Object -Last 25"
-            rem trace autoconf (the silent first link of the chain) inside the unpacked dir
-            echo === AUTOCONF PROBE ===
-            sh.exe -c "cd /d/a/_temp/core/workdir/UnpackedTarball/icu/source; echo PWD=$PWD; which autoconf; autoconf --version 2>&1 | head -1; echo INSTALL=[`cygpath -m /usr/bin/install`]; echo CONFIG_SHELL=[`cygpath -ms /bin/sh`]; ls -l configure configure.ac; autoconf -f -v 2>&1 | tail -40; echo AUTOCONF_RC=$?; head -2 configure"
+            make -f Makefile.gbuild -n "D:/a/_temp/core/workdir/ExternalProject/icu/build" 2>&1 | findstr /C:"icu-configure" /C:"autoconf"
+            echo === TOOL RESOLUTION ===
+            cmd /c "where sh.exe"
+            cmd /c "where autoconf"
+            cmd /c "where perl"
+            rem replay the first chain links under xtrace: pregen cp + configure start
+            echo === REPLAY TRACE ===
+            sh.exe -c "cd /d/a/_temp/core/workdir/UnpackedTarball/icu/source && set -x; cp -f /d/a/_temp/core/generated/icu-configure ./configure; head -1 configure; ./configure --build=x86_64-pc-cygwin --host=x86_64-pc-cygwin > replay.log 2>&1; echo CONF_RC=$?; head -30 replay.log; tail -20 replay.log"
             exit /b 1
           )
 
