@@ -275,11 +275,15 @@ jobs:
           export GOOFFICE_PREGEN_CONFIGURE="$GW/generated/configure"
           export PATH="$PWD/.ci-fake:$PATH"
           # msys perl lacks Font::TTF (configure's only missing module) —
-          # vendored from the local strawberry perl into generated/perl-ext;
-          # GITHUB_ENV so the make step inherits it too (build-time perl is
-          # the same msys perl)
-          export PERL5LIB="$GW/generated/perl-ext"
-          echo "PERL5LIB=$GW/generated/perl-ext" >> "$GITHUB_ENV"
+          # physically install the vendored modules (Font tree + IO/String.pm,
+          # from the local strawberry perl) into msys perl's site_perl;
+          # PERL5LIB alone was ignored by the configure-time check
+          SITE=$(ls -d /usr/lib/perl5/site_perl/5.* 2>/dev/null | head -1)
+          [ -n "$SITE" ] || SITE=/usr/lib/perl5/site_perl/5.40.0
+          mkdir -p "$SITE/IO"
+          cp -r "$GW/generated/perl-ext/Font" "$SITE/Font"
+          cp "$GW/generated/perl-ext/IO/String.pm" "$SITE/IO/String.pm"
+          /usr/bin/perl -MFont::TTF::Font -MIO::String -e 'print "perl-ext OK\n"'
           ./autogen.sh 2>&1 | tee autogen-ci.log
           # surface packaging decisions for quick diagnosis
           grep -E "MSI|package format|WiX" autogen-ci.log | head -8 || true
