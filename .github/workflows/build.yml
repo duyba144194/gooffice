@@ -398,7 +398,10 @@ jobs:
           case "${{ matrix.platform }}" in
             macos-*)   find "$CORE_DIR/workdir/installation" -name "*.dmg" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
             linux-*)   find "$CORE_DIR/workdir/installation" -name "*.deb" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
-            win-*)     find "$CORE_DIR/workdir/installation" -name "*.msi" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
+            # only the real packages live under */msi/install/; the idt_files/
+            # trees contain per-language merge-module intermediates (gooffice10_<lang>.msi)
+            # that must not be collected as artifacts
+            win-*)     find "$CORE_DIR/workdir/installation" -path "*/msi/install/*" -name "*.msi" -exec cp {} "$RUNNER_TEMP/out/" \; ;;
           esac
           ls -lh "$RUNNER_TEMP/out"
 
