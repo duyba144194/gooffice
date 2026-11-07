@@ -1,0 +1,35 @@
+diff --git a/instsetoo_native/CustomTarget_install.mk b/instsetoo_native/CustomTarget_install.mk
+index a0930f431..eb1e71a3b 100644
+--- a/instsetoo_native/CustomTarget_install.mk
++++ b/instsetoo_native/CustomTarget_install.mk
+@@ -125,7 +125,7 @@ $(instsetoo_installer_targets): $(SRCDIR)/solenv/bin/make_installer.pl \
+ 	    $(if $(MSYSTEM),export PERLIO=:unix PERL=$(STRAWBERRY_PERL) &&) \
+ 	    $(SRCDIR)/solenv/bin/call_installer.sh $(if $(verbose),-verbose,-quiet) $(subst ‧,:,$@),\
+ 	    $(gb_CustomTarget_workdir)/instsetoo_native/install/$(if $(filter en-US$(COMMA)%,$(instsetoo_installer_langs)),$(subst $(instsetoo_installer_langs),multilang,$@),$@).log)
+-	$(if $(filter %msi‧nostrip,$@),$(gb_Make_JobLimiter) release)
++	$(if $(filter %msi‧nostrip,$@),-$(gb_Make_JobLimiter) release)
+ 	$(call gb_Trace_EndRange,$@,INSTALLER)
+ 
+ $(gb_CustomTarget_workdir)/instsetoo_native/install/install.phony: $(instsetoo_installer_targets)
+diff --git a/solenv/bin/job-limiter.cpp b/solenv/bin/job-limiter.cpp
+index ee1bd8e6e..b2dee24c0 100644
+--- a/solenv/bin/job-limiter.cpp
++++ b/solenv/bin/job-limiter.cpp
+@@ -49,6 +49,17 @@ int release(HANDLE& semaphore_handle)
+     {
+         return 0;
+     }
++    else if (GetLastError() == ERROR_TOO_MANY_POSTS)
++    {
++        // GoOffice: when the last packaged installers finish at nearly the same time,
++        // the semaphore object is already gone (no process holds a handle) and each
++        // releasing process re-creates it (initial count 2) before posting.  Two posts
++        // then push the freshly created object over its maximum and ReleaseSemaphore
++        // fails with ERROR_TOO_MANY_POSTS.  Nothing is waiting for a slot anymore in
++        // that situation, so the failed post is harmless - do not let it fail the
++        // packaging recipe, which make would report as an installer failure.
++        return 0;
++    }
+     else
+     {
+         fprintf(stderr, "something went wrong trying to release a slot: %d\n", GetLastError());
