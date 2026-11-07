@@ -365,6 +365,18 @@ jobs:
           findstr /C:"NASM=" config_host.mk
           echo NASM=C:/msys64/usr/bin/nasm.exe>> config_host.mk
           findstr /C:"NASM=" config_host.mk
+          rem Round 32 (win-arm64): make -j8 -> cross-toolset -> the gb_Side=build
+          rem sub-make re-runs get-submodules; ./g then dies "Cannot find the git
+          rem binary" because config_build.mk re-exports PATH without Git. Host
+          rem make fetch below already clones every submodule via ./g, so
+          rem neutralise the redundant build-side clone (last definition wins)
+          rem and put Git cmd on both baked PATHs as a safety net. Host
+          rem GIT_NEEDED_SUBMODULES stays intact, otherwise helpcontent2 is
+          rem never cloned and the helppack build dies.
+          if exist config_build.mk echo export GIT_NEEDED_SUBMODULES=>>config_build.mk
+          if exist config_build.mk echo export PATH=C:/Program Files/Git/cmd;$(PATH)>>config_build.mk
+          if exist config_host.mk echo export PATH=C:/Program Files/Git/cmd;$(PATH)>>config_host.mk
+          findstr /C:"GIT_NEEDED_SUBMODULES" config_build.mk
           make fetch -j8 || exit /b 1
           findstr /C:"WSL=" config_host.mk
           make -j8 || (
